@@ -1,0 +1,80 @@
+\reportsection{Implications}
+\label{sec:implications}
+
+\paragraph{A parameter rule becomes a developer-facing gate.}
+The conventional role of a sizing rule is advisory.  Here it is executable.
+\code{MeetsBindingTarget} is decidable, and \code{ofField} constructs
+parameters that satisfy it.  A concrete configuration can therefore carry the
+binding theorem only when its digest width supports the declared security
+target and query budget.  The same structure already certifies the salt-space
+cardinality used by the hiding development.
+
+\paragraph{The proof stack has clear ownership.}
+The binding result can be reviewed one transformation at a time:
+\[
+\begin{aligned}
+\text{inconsistent accepted overlapping openings}
+&\Longrightarrow \text{disputed overlap}\\
+&\Longrightarrow \text{trace collision}\\
+&\Longrightarrow \text{birthday error}\\
+&\Longrightarrow \text{concrete parameter rule}.
+\end{aligned}
+\]
+A consuming soundness argument uses binding to treat
+accepted views of a committed object as consistent on every shared location.
+Where the argument needs to reason about the committed object itself, it may
+additionally consume extractability.
+Privacy and simulation arguments consume hiding under their stated leakage
+model.  The Merkle ROM instance connects the binding property to a collision
+event, and the field-specific constructor discharges the numerical
+precondition.  This division is useful because later verification can focus on
+how these contracts compose, rather than reconstructing them from the hasher
+implementation.
+
+\paragraph{The contract should be visible in Rust.}
+The remaining implementation proposal is deliberately small.  A shared digest
+contract should expose conservative output capacity, and a salt-space contract
+should expose cardinality.  Generic code over \code{H: MerkleHasher} can then
+check
+\[
+\code{H::Digest::BIT\_SIZE}\ge\secpar+1+2h
+\qquad\text{and}\qquad
+\code{H::Salt::CARDINALITY\_BITS}\ge\secpar.
+\]
+This makes the one-element BabyBear binding and salt choices visible before a
+commitment is used.  A hiding-capable implementation must additionally connect
+its randomness source and leaf-hash construction to the distribution assumed
+by the hiding game.
+\status{analytical; proposed Rust integration}
+
+\paragraph{Measurements become part of parameter review.}
+The benchmark plots show why the spine should include cost rather than stop at
+a theorem.  Increasing salt cardinality to $k=5$ is computationally cheap in
+the measured Poseidon2 configuration, though every opening carries the larger
+salt.  Increasing digest width grows proof size throughout the sweep, and the
+full $D=9$ binding certificate crosses a parent-hash permutation boundary.
+These are ordinary engineering tradeoffs once the security target is explicit.
+
+\paragraph{The evidence register supports ongoing development.}
+The current artefact supplies the complete shared-oracle binding certificate,
+the parameter constructor, typed hiding randomness, structural hiding lemmas,
+and salt-cardinality capstones.  The next hiding composition follows the
+Chiesa--Yogev structure: the oracle-native commitment game, basic-commitment
+hiding, the bottom-up Merkle hybrid, and selective-opening simulation.
+Extraction similarly has a named cache-extractor bridge.  Presenting these as
+the next contracts in the spine keeps the report precise without treating an
+active development sequence as a defect.
+
+\paragraph{What this enables for \textsf{Arkworks}.}
+Constructions above the commitment layer can depend on \textsf{ark-vc} without
+silently choosing their own interpretation of binding, hiding, or
+extractability, and without coupling themselves to one implementation.
+Reviewers receive one place to inspect the property, model, parameters, Rust
+obligations, measured cost, and formal evidence.  Once that layer is verified,
+the remaining work above it becomes a question of composing stated contracts
+rather than carrying an unexamined commitment assumption through the stack.
+
+\takeaway{The larger result is a method for verifying \textsf{ark-vc} and
+\textsf{ark-mt}.  It turns commitment security into a parameterised,
+measurable, and reviewable contract, and gives later verification a stable
+object to compose.}

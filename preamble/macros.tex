@@ -1,0 +1,85 @@
+%% ============================================================
+%% macros.tex -- notation and editorial semantics
+%% ============================================================
+
+\newcommand{\ie}{\emph{i.e.}\xspace}
+\newcommand{\eg}{\emph{e.g.}\xspace}
+\newcommand{\cf}{\emph{cf.}\xspace}
+\newcommand{\etal}{et al.\xspace}
+\newcommand{\wrt}{w.r.t.\xspace}
+
+\newcommand{\ours}[1]{\textcolor{reportblue}{#1}}
+\newcommand{\baseline}[1]{\textcolor{reportgrey}{#1}}
+\newcommand{\status}[1]{%
+  {\footnotesize\textsf{\textcolor{reportgrey}{[\,#1\,]}}}\xspace
+}
+
+%% Algorithms.
+\newcommand{\algo}[1]{\ensuremath{\mathsf{#1}}}
+\newcommand{\Setup}{\algo{Setup}}
+\newcommand{\Gen}{\algo{Gen}}
+\newcommand{\Commit}{\algo{Commit}}
+\newcommand{\Open}{\algo{Open}}
+\newcommand{\Verify}{\algo{Verify}}
+\newcommand{\VCCheck}{\algo{Check}}
+\newcommand{\CacheExtract}{\algo{CacheExtract}}
+
+%% Scheme and spaces.
+\newcommand{\VC}{\ensuremath{\mathsf{VC}}}
+\newcommand{\MT}{\ensuremath{\mathsf{MT}}}
+\newcommand{\MTSymbol}{\ensuremath{\mathsf{MT}}}
+\newcommand{\MTConstructor}[4]{\ensuremath{\mathsf{MT}[#1,#2,#3,#4]}}
+\newcommand{\MTCommit}{\ensuremath{\mathsf{MT}.\mathsf{Commit}}}
+\newcommand{\MTOpen}{\ensuremath{\mathsf{MT}.\mathsf{Open}}}
+\newcommand{\MTCheck}{\ensuremath{\mathsf{MT}.\mathsf{Check}}}
+\newcommand{\MTAlphabet}{\ensuremath{\Sigma}}
+\newcommand{\MTMessageLength}{\ensuremath{\ell}}
+\newcommand{\MTSaltSize}{\ensuremath{s}}
+\newcommand{\MTMessageVector}{\ensuremath{\mathbf{m}}}
+\newcommand{\MTMessageIndexSet}{\ensuremath{I}}
+\newcommand{\MTMessageSubVector}{\ensuremath{\mathbf{a}}}
+\newcommand{\MTCommitment}{\ensuremath{\mathsf{rt}}}
+\newcommand{\MTTrapdoor}{\ensuremath{\mathsf{td}}}
+\newcommand{\MTProof}{\ensuremath{\mathsf{pf}}}
+\newcommand{\ROOutputSize}{\ensuremath{\sigma}}
+\newcommand{\ROFunction}{\ensuremath{f}}
+\newcommand{\RODistribution}[1]{\ensuremath{\mathcal{U}_{\scriptscriptstyle\mathrm{b}}(#1)}}
+\newcommand{\msgspace}{\ensuremath{\mathcal{M}}}
+\newcommand{\idxspace}{\ensuremath{\mathcal{K}}}
+\newcommand{\commspace}{\ensuremath{\mathcal{C}}}
+\newcommand{\proofspace}{\ensuremath{\Pi}}
+\newcommand{\rndspace}{\ensuremath{\mathcal{R}}}
+\newcommand{\bits}{\ensuremath{\{0,1\}}}
+\newcommand{\N}{\ensuremath{\mathbb{N}}}
+\newcommand{\field}{\ensuremath{\mathbb{F}}}
+
+%% Objects and parameters.
+\newcommand{\secpar}{\ensuremath{\lambda}}
+\newcommand{\digestbits}{\ensuremath{\kappa}}
+\newcommand{\saltbits}{\ensuremath{s}}
+\newcommand{\msglen}{\ensuremath{\ell}}
+\newcommand{\openbudget}{\ensuremath{Q}}
+\newcommand{\querybudget}{\ensuremath{q}}
+\newcommand{\shape}{\ensuremath{\mathsf{shape}}}
+\newcommand{\vk}{\ensuremath{\mathsf{vk}}}
+\newcommand{\querybits}{\ensuremath{h}}
+\newcommand{\ThetaVC}{\ensuremath{\Theta}}
+\newcommand{\msgvec}{\ensuremath{\mathbf{m}}}
+\newcommand{\comm}{\ensuremath{\mathsf{cm}}}
+\newcommand{\aux}{\ensuremath{\mathsf{aux}}}
+\newcommand{\opening}{\ensuremath{\mathsf{pf}}}
+\newcommand{\pp}{\ensuremath{\mathsf{pp}}}
+\newcommand{\td}{\ensuremath{\mathsf{td}}}
+\newcommand{\idxset}{\ensuremath{I}}
+\newcommand{\RO}{\ensuremath{H}}
+\newcommand{\adv}{\ensuremath{\mathcal{A}}}
+\newcommand{\ext}{\ensuremath{\mathcal{E}}}
+\newcommand{\Exp}[1]{\ensuremath{\mathsf{Exp}^{\RO}_{#1}}}
+\newcommand{\Adv}[1]{\ensuremath{\mathsf{Adv}^{#1}_{\VC,\adv}}}
+\newcommand{\sample}{\ensuremath{\stackrel{\$}{\leftarrow}}}
+\newcommand{\negl}{\ensuremath{\mathsf{negl}(\secpar)}}
+
+%% Lean-facing names.
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\collisionBound}{\ensuremath{\mathsf{collisionBound}}}
+\newcommand{\MeetsBindingTarget}{\ensuremath{\mathsf{MeetsBindingTarget}}}

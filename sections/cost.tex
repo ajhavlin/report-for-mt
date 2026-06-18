@@ -1,0 +1,48 @@
+\reportsection{Cost}
+\label{sec:cost}
+
+The rule says which configurations support the claim; the sweeps say what they
+cost.  Each plot fixes a binary tree with $4{,}096$ leaves and $32$ openings and
+reports mean prover time, verifier time, and proof size, with a field-coloured
+line at the first $\secpar\ge128$ configuration and a red \textsf{x} at each cost
+transition.  The hash takes its salt in its own native unit: $k$ field elements
+for an algebraic hash such as Poseidon2, or $S$ bytes for a byte-oriented hash
+such as Blake3.  Because the unit already matches the hash, the salt pays no
+encoding penalty.  The rule therefore reports two salt columns, $k$ and $S$, not
+as redundant choices but as the right one for each kind of hash.  The Poseidon2
+hiding sweep reaches $\secpar=128$ at
+$k=5$ for BabyBear, $k=3$ for Goldilocks, and $k=1$ for BN254; the binding sweep
+at $D=9$, $D=5$, and $D=2$.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.95\linewidth]{figures/benchmark_hiding_poseidon_triptych_extra_x.pdf}\\[5pt]
+  \includegraphics[width=0.95\linewidth]{figures/benchmark_binding_poseidon_triptych_extra_x.pdf}
+  \caption{Poseidon2 hiding cost as salt width grows (top) and binding cost as
+  digest width grows (bottom).  Field-coloured lines mark the first measured
+  $\secpar\ge128$ and $\secpar\ge256$ points for BabyBear, Goldilocks, and BN254;
+  red \textsf{x} markers flag inputs that cross into an extra permutation.}
+  \label{fig:poseidon-cost}
+\end{figure}
+
+For Poseidon2 both the $\secpar\ge128$ and $\secpar\ge256$ thresholds land
+before the first red \textsf{x} for all three fields: the certified parameters
+fit inside the permutation block already computed for the rate-width output, so
+correct security costs nothing extra (\cref{fig:hash-blocks}, left): widening the
+digest up to the permutation rate reuses output that is computed anyway.  Bytewise
+Blake3 is the contrast: only the $128$-bit hiding salt clears before its first
+compression-block transition, while wider digests cross a block boundary and pay
+with an extra Blake3 compression block (\cref{fig:hash-blocks}, right).
+\status{empirical; binary tree, $4{,}096$ leaves, $32$ openings}
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.42\linewidth]{figures/poseidon-rate-width.pdf}\hfill
+  \includegraphics[width=0.42\linewidth]{figures/blake3-extra-block.pdf}
+  \caption{Why the cost transitions fall where they do.  Left: a Poseidon2
+  permutation writes its output into the rate of a fixed-width state, so widening
+  the digest up to the rate stays inside one permutation call and is free.  Right:
+  Blake3 absorbs in fixed blocks, so a digest that crosses a block boundary costs
+  one extra block.}
+  \label{fig:hash-blocks}
+\end{figure}

@@ -1,0 +1,30 @@
+\reportsection{Background: From Retrofit to Security Spine}
+\label{sec:phase1}
+
+The first phase of this work compared the existing
+\textsf{ark-crypto-primitives} Merkle tree with the Chiesa--Yogev
+presentation~\cite{CY26}.  It began as implementation work around open feature
+requests: simplify the split hash interface, remove caller-side ordering
+footguns, support richer tree shapes, and compress multi-openings.  Read
+together, those requests pointed to one broader issue.  The implementation had
+many locally reasonable decisions, but no single specification against which
+their combined behaviour could be reviewed.
+
+That comparison produced useful engineering results.  In particular,
+\code{ImplicitCoPath} performs the book's path-pruning optimisation without
+materialising a coordinate bookkeeping layer, and the
+\code{Committed}/\code{OpeningProof}/\code{Opening} split makes ordering and
+duplicate-index validation part of construction rather than caller discipline.
+These results remain relevant, but they are background to the present report.
+
+The stronger finding was methodological.  A reference definition can organise
+an API, yet an API alone still does not tell a developer which security claim a
+concrete configuration supports.  That is the step from retrofit to security
+spine: keep the literature-facing definition, connect it to executable
+interfaces, state the security games, derive the parameters, and expose the
+evidence boundary.  The technical overview and results show that step for
+\textsf{ark-vc} and \textsf{ark-mt}.
+
+\takeaway{Phase 1 supplied the design context and several useful implementation
+patterns.  Its lasting role in this report is the lesson that definitions must
+remain connected to the code and claims they are meant to govern.}

@@ -1,0 +1,76 @@
+\reportsection{Binding}
+\label{sec:binding}
+
+\subsection{Definition and Failure}
+\label{sec:binding-def}
+
+\begin{definition}[Completeness]\label{def:vc-complete}
+$\VC$ is \emph{complete} if for every $\msgvec\in\MTAlphabet^{\MTMessageLength}$
+and every $\idxset\subseteq[\MTMessageLength]$ the honest
+$\Commit$--$\Open$--$\VCCheck$ round trip accepts $\msgvec_{\idxset}$ with
+probability~$1$.  For Merkle this is honest reconstruction of the root from an
+opening.
+\end{definition}
+
+\begin{definition}[Position binding]\label{def:vc-binding}
+$\VC$ is \emph{position binding} if no efficient adversary outputs a commitment
+$\comm$ with two accepted openings
+$(\idxset_b,\MTMessageSubVector_b,\opening_b)$ that disagree at some
+$i\in\idxset_0\cap\idxset_1$, except with probability $\negl$.  The commitment is
+does not have an honest-generation requirement and a single conflict
+at a shared index is the local witness that binding has failed.
+\end{definition}
+
+Position binding is what lets a soundness argument treat each queried answer as
+the unique value the commitment fixes the moment $\comm$ is published, before
+the query set is chosen.  The shipped one-element BabyBear digest fails this
+concretely: it publishes a
+root in a ${\sim}30$-bit space, and a birthday search confirms the collision finding with
+two openings of one root disagreeing at a position in $44$~seconds.
+
+\subsection{Sizing and Validation}
+\label{sec:binding-valid}
+
+The rule of \cref{sec:rule} sets the digest to $D=9$ field elements
+($\digestbits=270$ bits) for BabyBear at $\secpar=128$, $h=64$: a $13$-bit
+margin over the $\secpar+1+2h=257$-bit floor.  Write $\ThetaVC$ for the concrete
+configuration under test (field, level, hash, and derived widths), so
+$\Adv{bind}(\ThetaVC)$ is the binding advantage against that Merkle instance.
+
+\begin{proposition}[Binding from collision resistance]\label{thm:binding-cr}
+Let $\MT[\RO]$ be a Merkle commitment over a shape $G_\ell$ whose leaf encoding
+is injective and whose leaf and internal-node calls are domain separated.  If
+the shared $\digestbits$-bit oracle receives at most $\querybudget$ distinct
+queries during the complete experiment, then
+\[
+  \Adv{bind}(\ThetaVC)
+  \le \Pr[\text{oracle-trace collision}]
+  \le \frac{\querybudget(\querybudget-1)}{2^{\digestbits+1}},
+\]
+which meets $2^{-\secpar}$ when $\querybudget\le2^{h}$ and
+$\secpar+1+2h\le\digestbits$.
+\status{Lean-backed, generic over \texttt{MerkleShape}}
+\end{proposition}
+
+\noindent\emph{Reason.}
+A disputed index $i\in\idxset_0\cap\idxset_1$ yields two authentication paths
+that agree at some parent but disagree below it: two distinct oracle inputs with
+one output.  Domain separation pins the leaf and internal roles so the collision
+is genuine, and position binding forecloses an adversary re-interpreting the
+same digests under a different tree shape: the tree-inequality event
+$E_{\mathrm{tree}}$ of~\cite{CY26}, where the tree reconstructed from the
+commitment trace and the one reconstructed after the opening queries can differ
+only if some opening answer accidentally matches a label already fixed in the
+first tree.  A union bound over the opening queries keeps that probability
+negligible whenever the digest resists collisions, so a binding break still
+reduces to one oracle collision rather than to any freedom in how the tree is
+read.  Hashing a geometry tag of layer, index, and arity into each node keeps
+this domain separation positional, foreclosing the replay of a subtree proof in
+a differently shaped tree.
+
+The reduction is generic over the Merkle shape, with the binary tree as the
+exhibited instance and $k$-ary and arbitrary-length shapes sharing it but not yet
+exhibited (\cref{sec:conclusion}).  A machine-checked version of the
+colliding-paths step, the birthday bound, and the parameter arithmetic is
+supported in written Lean code, so binding is the axis we can currently back end
+to end.

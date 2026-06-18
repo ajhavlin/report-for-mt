@@ -1,0 +1,55 @@
+\reportsection{Hiding}
+\label{sec:hiding}
+
+\subsection{Definition and Failure}
+\label{sec:hiding-def}
+
+\begin{definition}[Hiding]\label{def:vc-hiding}
+A randomised $\VC$ whose $\Commit$ draws salts from a space $\rndspace$ is
+\emph{hiding} if, for any two messages of length $\MTMessageLength$ and any
+adversary that after seeing $\comm$ adaptively opens positions on which the
+messages agree, the advantage in deciding which was committed is at most
+$\negl$.  For Merkle this refines to \emph{root hiding}---the real root is
+statistically close to one simulated without $\msgvec$---strengthened to
+\emph{selective-opening hiding}, which must also hide through the disclosed
+salts and authentication paths of partial openings.
+\end{definition}
+
+A Merkle salt is a random per-leaf nonce: each leaf is itself a basic commitment
+$H(\msgvec_i,\text{salt})$, the salt travels in the authentication path beside
+the sibling digests so the verifier can recompute the leaf, and opening one leaf
+commitment under two different salts would force a hash collision, so the salt
+binds a value to its position even as it hides it.  Hiding then rests entirely on
+the salt space, which must be both well sampled and large enough to resist search
+within the security budget; a deterministic salt satisfies neither, since the
+receiver can recompute candidate leaf commitments.
+The shipped one-element BabyBear salt carries only ${\sim}30$ bits and is broken
+outright, and---unlike binding's additive contribution---there is no
+protocol-level rescue, because the root is read from the transcript before any
+later message.
+
+\subsection{Sizing and Contract}
+\label{sec:hiding-valid}
+
+The rule sets the salt cardinality to $k=5$ field salts or $S=16$ byte salts for
+BabyBear at $\secpar=128$, each defining a space of at least $2^{128}$ elements.
+These cardinalities are machine-checked (\code{babyBear\_field\_salt\_hiding},
+\code{babyBear\_byte\_salt\_hiding}), and the interface enforces them
+structurally: \code{MerkleHasher} no longer exposes a salt sampler, and hiding
+randomness must arrive through a typed, key-indexed \code{Randomness} field
+consumed by a dedicated hiding commit.
+
+What remains is an \emph{intended reduction}, not a machine-checked theorem.  The
+root-hiding obligation has the form
+\[
+  \Adv{hide}(\ThetaVC)
+  \le \frac{\msglen\querybudget}{2^{\saltbits}}
+  + \varepsilon_{\mathrm{internal}}(\digestbits,\querybudget,\shape),
+\]
+read off two bad events: a query to a hidden salted leaf input, or an internal
+hash collision as the simulation rebuilds the tree from the leaves up to the
+root.  Discharging it and lifting it to the selective-opening target is the next
+composition step, by way of an oracle-native leaf argument, a bottom-up
+simulation of the root from the leaves, and a simulator for the full disclosed
+view.  The proved salt sizes are prerequisites, not the theorem: the cardinality
+lemmas are machine-checked and the composition stays an open obligation.

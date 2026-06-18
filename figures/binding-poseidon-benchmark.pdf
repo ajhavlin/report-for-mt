@@ -1,0 +1,76 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 1280 760] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+5 0 obj
+<< /Length 2907 >>
+stream
+1.000 1.000 1.000 rg 0.0 0.0 1280.0 760.0 re f
+0.141 0.176 0.216 rg BT /F1 24 Tf 55.0 705.0 Td (Poseidon Per-Call Permutation Ratio) Tj ET
+0.376 0.424 0.486 rg BT /F1 12 Tf 55.0 678.0 Td (Total permutation calls divided by total hash calls. 1.0 means one permutation per hash call.) Tj ET
+0.141 0.176 0.216 rg 90.0 173.5 1150.0 1.5 re f
+0.141 0.176 0.216 rg 90.0 175.0 1.5 460.0 re f
+0.722 0.251 0.251 rg 90.0 437.4 1150.0 2.0 re f
+0.184 0.502 0.341 rg 90.0 175.0 49.9 264.4 re f
+0.141 0.176 0.216 rg BT /F1 8 Tf 90.0 153.0 Td (BabyBear A2 k0 D1) Tj ET
+0.184 0.502 0.341 rg 147.9 175.0 49.9 264.4 re f
+0.141 0.176 0.216 rg BT /F1 8 Tf 147.9 153.0 Td (BabyBear A2 k1 D1) Tj ET
+0.184 0.502 0.341 rg 205.8 175.0 49.9 264.4 re f
+0.141 0.176 0.216 rg BT /F1 8 Tf 205.8 153.0 Td (BabyBear A2 k2 D1) Tj ET
+0.184 0.502 0.341 rg 263.7 175.0 49.9 264.4 re f
+0.141 0.176 0.216 rg BT /F1 8 Tf 263.7 153.0 Td (BabyBear A2 k5 D1) Tj ET
+0.184 0.502 0.341 rg 321.6 175.0 49.9 264.4 re f
+0.141 0.176 0.216 rg BT /F1 8 Tf 321.6 153.0 Td (BabyBear A2 k14 D1) Tj ET
+0.184 0.502 0.341 rg 379.5 175.0 49.9 264.4 re f
+0.141 0.176 0.216 rg BT /F1 8 Tf 379.5 153.0 Td (BabyBear A2 k15 D1) Tj ET
+0.722 0.251 0.251 rg 437.4 175.0 49.9 393.1 re f
+0.141 0.176 0.216 rg BT /F1 8 Tf 437.4 153.0 Td (BabyBear A2 k16 D1) Tj ET
+0.184 0.502 0.341 rg 495.3 175.0 49.9 264.4 re f
+0.141 0.176 0.216 rg BT /F1 8 Tf 495.3 153.0 Td (BabyBear A2 k0 D2) Tj ET
+0.184 0.502 0.341 rg 553.2 175.0 49.9 264.4 re f
+0.141 0.176 0.216 rg BT /F1 8 Tf 553.2 153.0 Td (BabyBear A2 k0 D4) Tj ET
+0.184 0.502 0.341 rg 611.1 175.0 49.9 264.4 re f
+0.141 0.176 0.216 rg BT /F1 8 Tf 611.1 153.0 Td (BabyBear A2 k0 D8) Tj ET
+0.722 0.251 0.251 rg 669.0 175.0 49.9 400.0 re f
+0.141 0.176 0.216 rg BT /F1 8 Tf 669.0 153.0 Td (BabyBear A2 k0 D9) Tj ET
+0.184 0.502 0.341 rg 726.9 175.0 49.9 264.4 re f
+0.141 0.176 0.216 rg BT /F1 8 Tf 726.9 153.0 Td (BabyBear A8 k0 D1) Tj ET
+0.184 0.502 0.341 rg 784.8 175.0 49.9 264.4 re f
+0.141 0.176 0.216 rg BT /F1 8 Tf 784.8 153.0 Td (BabyBear A8 k0 D2) Tj ET
+0.722 0.251 0.251 rg 842.7 175.0 49.9 300.7 re f
+0.141 0.176 0.216 rg BT /F1 8 Tf 842.7 153.0 Td (BabyBear A8 k0 D3) Tj ET
+0.184 0.502 0.341 rg 900.6 175.0 49.9 264.4 re f
+0.141 0.176 0.216 rg BT /F1 8 Tf 900.6 153.0 Td (Goldilocks A2 k0 D) Tj ET
+0.184 0.502 0.341 rg 958.5 175.0 49.9 264.4 re f
+0.141 0.176 0.216 rg BT /F1 8 Tf 958.5 153.0 Td (Goldilocks A2 k1 D) Tj ET
+0.184 0.502 0.341 rg 1016.4 175.0 49.9 264.4 re f
+0.141 0.176 0.216 rg BT /F1 8 Tf 1016.4 153.0 Td (Goldilocks A2 k2 D) Tj ET
+0.184 0.502 0.341 rg 1074.3 175.0 49.9 264.4 re f
+0.141 0.176 0.216 rg BT /F1 8 Tf 1074.3 153.0 Td (Goldilocks A2 k0 D) Tj ET
+0.184 0.502 0.341 rg 1132.2 175.0 49.9 264.4 re f
+0.141 0.176 0.216 rg BT /F1 8 Tf 1132.2 153.0 Td (Goldilocks A2 k0 D) Tj ET
+0.184 0.502 0.341 rg 1190.1 175.0 49.9 264.4 re f
+0.141 0.176 0.216 rg BT /F1 8 Tf 1190.1 153.0 Td (Goldilocks A2 k0 D) Tj ET
+endstream
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000242 00000 n 
+0000000312 00000 n 
+trailer << /Size 6 /Root 1 0 R >>
+startxref
+3270
+%%EOF

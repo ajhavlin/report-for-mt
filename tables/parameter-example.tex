@@ -1,0 +1,20 @@
+\begin{table}[H]
+  \centering
+  \caption{BabyBear parameters at $\secpar=128$, $h=64$, computed by
+    \code{MerkleHasherParams.ofField 30 128 64} and verified by
+    \texttt{native\_decide}.  Salt widths $k$, $S$ are proved cardinality
+    certificates; the Merkle ROM hiding theorem is the next composition
+    milestone.}
+  \label{tab:babybear}
+  \begin{tabular}{@{}lccccl@{}}
+    \toprule
+    Configuration & $D$ & $\kappa$ (bits) & $k$ & $S$ (bytes) & Binding status \\
+    \midrule
+    Single field element ($D=1$) & $1$ & $30$ & --- & --- & \baseline{refused} \\
+    \code{ofField 30 128 64}
+      & \ours{\textbf{9}} & \ours{\textbf{270}}
+      & \ours{\textbf{5}} & \ours{\textbf{16}}
+      & \ours{\textbf{machine-checked}} \\
+    \bottomrule
+  \end{tabular}
+\end{table}

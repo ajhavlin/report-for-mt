@@ -1,0 +1,81 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 1280 760] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+5 0 obj
+<< /Length 3189 >>
+stream
+1.000 1.000 1.000 rg 0.0 0.0 1280.0 760.0 re f
+0.141 0.176 0.216 rg BT /F1 24 Tf 55.0 705.0 Td (Commit Timing by MerkleHasher) Tj ET
+0.376 0.424 0.486 rg BT /F1 12 Tf 55.0 678.0 Td (Criterion mean, n=4096. Bytewise and Poseidon are shown on the same millisecond axis.) Tj ET
+0.141 0.176 0.216 rg 90.0 173.5 1150.0 1.5 re f
+0.141 0.176 0.216 rg 90.0 175.0 1.5 460.0 re f
+0.169 0.392 0.706 rg 90.0 175.0 42.3 12.7 re f
+0.141 0.176 0.216 rg BT /F1 8 Tf 90.0 153.0 Td (S_bytes=0) Tj ET
+0.169 0.392 0.706 rg 140.3 175.0 42.3 15.3 re f
+0.141 0.176 0.216 rg BT /F1 8 Tf 140.3 153.0 Td (S_bytes=16) Tj ET
+0.169 0.392 0.706 rg 190.7 175.0 42.3 15.2 re f
+0.141 0.176 0.216 rg BT /F1 8 Tf 190.7 153.0 Td (S_bytes=32) Tj ET
+0.439 0.345 0.659 rg 241.0 175.0 42.3 259.1 re f
+0.141 0.176 0.216 rg BT /F1 8 Tf 241.0 153.0 Td (BabyBear A2 k0 D1) Tj ET
+0.439 0.345 0.659 rg 291.4 175.0 42.3 265.9 re f
+0.141 0.176 0.216 rg BT /F1 8 Tf 291.4 153.0 Td (BabyBear A2 k1 D1) Tj ET
+0.439 0.345 0.659 rg 341.7 175.0 42.3 259.2 re f
+0.141 0.176 0.216 rg BT /F1 8 Tf 341.7 153.0 Td (BabyBear A2 k2 D1) Tj ET
+0.439 0.345 0.659 rg 392.1 175.0 42.3 279.6 re f
+0.141 0.176 0.216 rg BT /F1 8 Tf 392.1 153.0 Td (BabyBear A2 k5 D1) Tj ET
+0.439 0.345 0.659 rg 442.4 175.0 42.3 272.7 re f
+0.141 0.176 0.216 rg BT /F1 8 Tf 442.4 153.0 Td (BabyBear A2 k14 D1) Tj ET
+0.439 0.345 0.659 rg 492.8 175.0 42.3 271.8 re f
+0.141 0.176 0.216 rg BT /F1 8 Tf 492.8 153.0 Td (BabyBear A2 k15 D1) Tj ET
+0.439 0.345 0.659 rg 543.1 175.0 42.3 400.0 re f
+0.141 0.176 0.216 rg BT /F1 8 Tf 543.1 153.0 Td (BabyBear A2 k16 D1) Tj ET
+0.439 0.345 0.659 rg 593.5 175.0 42.3 275.6 re f
+0.141 0.176 0.216 rg BT /F1 8 Tf 593.5 153.0 Td (BabyBear A2 k0 D2) Tj ET
+0.439 0.345 0.659 rg 643.8 175.0 42.3 261.4 re f
+0.141 0.176 0.216 rg BT /F1 8 Tf 643.8 153.0 Td (BabyBear A2 k0 D4) Tj ET
+0.439 0.345 0.659 rg 694.2 175.0 42.3 266.8 re f
+0.141 0.176 0.216 rg BT /F1 8 Tf 694.2 153.0 Td (BabyBear A2 k0 D8) Tj ET
+0.439 0.345 0.659 rg 744.5 175.0 42.3 397.8 re f
+0.141 0.176 0.216 rg BT /F1 8 Tf 744.5 153.0 Td (BabyBear A2 k0 D9) Tj ET
+0.439 0.345 0.659 rg 794.9 175.0 42.3 156.6 re f
+0.141 0.176 0.216 rg BT /F1 8 Tf 794.9 153.0 Td (BabyBear A8 k0 D1) Tj ET
+0.439 0.345 0.659 rg 845.2 175.0 42.3 160.2 re f
+0.141 0.176 0.216 rg BT /F1 8 Tf 845.2 153.0 Td (BabyBear A8 k0 D2) Tj ET
+0.439 0.345 0.659 rg 895.6 175.0 42.3 168.0 re f
+0.141 0.176 0.216 rg BT /F1 8 Tf 895.6 153.0 Td (BabyBear A8 k0 D3) Tj ET
+0.439 0.345 0.659 rg 945.9 175.0 42.3 372.6 re f
+0.141 0.176 0.216 rg BT /F1 8 Tf 945.9 153.0 Td (Goldilocks A2 k0 D) Tj ET
+0.439 0.345 0.659 rg 996.3 175.0 42.3 390.9 re f
+0.141 0.176 0.216 rg BT /F1 8 Tf 996.3 153.0 Td (Goldilocks A2 k1 D) Tj ET
+0.439 0.345 0.659 rg 1046.6 175.0 42.3 373.9 re f
+0.141 0.176 0.216 rg BT /F1 8 Tf 1046.6 153.0 Td (Goldilocks A2 k2 D) Tj ET
+0.439 0.345 0.659 rg 1097.0 175.0 42.3 373.7 re f
+0.141 0.176 0.216 rg BT /F1 8 Tf 1097.0 153.0 Td (Goldilocks A2 k0 D) Tj ET
+0.439 0.345 0.659 rg 1147.3 175.0 42.3 366.5 re f
+0.141 0.176 0.216 rg BT /F1 8 Tf 1147.3 153.0 Td (Goldilocks A2 k0 D) Tj ET
+0.439 0.345 0.659 rg 1197.7 175.0 42.3 381.2 re f
+0.141 0.176 0.216 rg BT /F1 8 Tf 1197.7 153.0 Td (Goldilocks A2 k0 D) Tj ET
+endstream
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000242 00000 n 
+0000000312 00000 n 
+trailer << /Size 6 /Root 1 0 R >>
+startxref
+3552
+%%EOF

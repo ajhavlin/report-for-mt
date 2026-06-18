@@ -1,0 +1,19 @@
+\reportsection{Conclusion and Next Steps}
+\label{sec:conclusion}
+
+A vector commitment is only as strong as the parameters underneath it, and the
+default \textsf{ark-mt} configurations miss that target for small fields on both
+axes at once.  The parametrisation model fixes the boundary at the reference
+level, derives the parameters a target forces, and reports the evidence: the
+binding bound, its birthday step, and the BabyBear sizing carry a machine-checked
+Lean backing, the salt-cardinality lemmas are certified, and the typed hiding
+interface is implemented, so binding holds end to end while hiding has its
+prerequisites in place for the rest.
+
+\paragraph{Next.}
+Four obligations remain open: the random-oracle hiding composition that lifts the
+certified salt sizes to a selective-opening theorem; the extraction bridge
+\code{cacheExtract\_sound}, currently a \code{sorry}; multi-round BCS and
+Fiat--Shamir soundness, which justifies the strengthened digest target; and the
+non-binary shapes, which share the generic binding reduction but are not yet
+exhibited. 

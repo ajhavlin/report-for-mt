@@ -1,0 +1,63 @@
+\reportsection{Motivation}
+\label{sec:motivation}
+
+\paragraph{The commitment layer is load-bearing, and sizing it is not the
+user's job.}
+Merkle commitments are the hash-based vector commitments practitioners actually
+use: they rest only on a collision-resistant hash, which keeps them post-quantum
+secure, and every interactive oracle proof in \textsf{Arkworks} is compiled
+through one, so the commitment's guarantees become the compiled argument's
+guarantees.  Configuring one correctly is not simple.  \textsf{ark-vc} fixes the
+interface between the security definitions and interchangeable implementations,
+\textsf{ark-mt} is the principal hash-based one, and a correct configuration
+jointly sizes a digest width, a salt cardinality, and a domain-separation and
+query-budget discipline against the target, tightly enough not to spend
+efficiency it need not.  These widths move with field capacity and cannot be
+hand-derived safely across fields, and an undersized choice still compiles and
+passes every functional test.  Worse, a configuration cannot satisfy a property
+the developer was never told it had to satisfy: knowing which claim a
+configuration must support is itself a prerequisite to security, and the
+infrastructure should hand the user that knowledge, because otherwise it is
+hidden away and easily missed, with detrimental security consequences.
+
+The definitions carry direct protocol meaning.  \emph{Binding} forces two
+accepted views of one root to agree wherever they overlap, so a soundness
+argument may treat committed answers as fixed; \emph{hiding} keeps the commitment
+and its openings from revealing unopened entries, which is what a zero-knowledge
+argument relies on.  This report scopes its claims to these two, with
+extractability and equivocation named only as next steps.
+
+\paragraph{Both defaults fail for small fields.}
+The failure lives at the \code{MerkleHasher} trait, where the digest width and
+the per-leaf salt are associated types that can be silently undersized with no
+compile-time warning.  For BabyBear at $\secpar=128$, a one-element salt carries
+only ${\sim}30$ bits, far below the entropy floor, so an adversary can recover a
+hidden leaf and hiding is void.  A one-element digest publishes a root in a
+${\sim}30$-bit space; an honest tree over $2^{20}$ leaves already makes roughly
+$2$~million internal hash calls, far past the ${\sim}46{,}000$ birthday
+threshold, and a deliberate collision confirms a binding break in $44$~seconds.
+Neither failure implicates the hash function; both follow from
+field-size-agnostic parameter choices.
+
+\paragraph{Protocol use makes both failures worse, not safer.}
+These numbers describe the commitment in isolation, but it is never deployed in
+isolation.  In the BCS compilation \textsf{ark-vc} targets, which turns an
+interactive oracle proof into a non-interactive argument by committing each
+oracle message and answering the verifier's queries with authenticated openings,
+the root is fixed into the argument transcript from the first message, and
+binding enters the compiled soundness bound \emph{additively}, as
+$\varepsilon_{\mathrm{PCP}}+\collisionBound(\digestbits,\querybudget)+\varepsilon$,
+where $\varepsilon_{\mathrm{PCP}}$ is the soundness error of the underlying proof
+system and $\varepsilon$ the residual slack the compilation adds.
+Fiat--Shamir only tightens the digest requirement, since grinding lets the prover
+hash many challenge nonces in search of a favourable transcript, and each attempt
+is another oracle query, so the effective query budget inflates and the target
+rises from roughly $2\secpar$ to $3\secpar$ bits.  Hiding has no protocol-level
+rescue at all: the root sits in the transcript and is read before any later
+message, so salt entropy cannot be traded for code distance, query count, or
+round structure.  The fix is therefore not a better hash but a discipline that
+sizes the parameters from the target and refuses the undersized ones.  The report
+then follows it by property: binding (\cref{sec:binding}) and hiding
+(\cref{sec:hiding}) carry their own definition, failure, and parameter,
+\cref{sec:spine} unifies the two under one rule, and \cref{sec:cost} measures the
+cost.

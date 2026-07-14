@@ -1,23 +1,34 @@
 \reportsection{Cost}
 \label{sec:cost}
 
-The rule says which configurations support the claim; the sweeps say what they
-cost.  Each plot fixes a binary tree with $4{,}096$ leaves and $32$ openings and
-reports mean prover time, verifier time, and proof size, with a field-coloured
-line at the first $\secpar\ge128$ configuration and a red \textsf{x} at each cost
-transition.  The hash takes its salt in its own native unit: $k$ field elements
-for an algebraic hash such as Poseidon2, or $S$ bytes for a byte-oriented hash
-such as Blake3.  Because the unit already matches the hash, the salt pays no
-encoding penalty.  The rule therefore reports two salt columns, $k$ and $S$, not
-as redundant choices but as the right one for each kind of hash.  The Poseidon2
-hiding sweep reaches $\secpar=128$ at
-$k=5$ for BabyBear, $k=3$ for Goldilocks, and $k=1$ for BN254; the binding sweep
-at $D=9$, $D=5$, and $D=2$.
+\paragraph{What the benchmarks measure.}
+The rule says which configurations support the claim; the benchmarks say what
+they cost.  Each plot fixes a binary tree with $4{,}096$ leaves and $32$ openings
+and reports mean prover time, verifier time, and proof size.  A field-coloured
+line marks the first $\secpar\ge128$ configuration, and a red \textsf{x} marks
+each cost transition.
+
+\paragraph{The salt arrives in the hash's native unit.}
+The hash takes its salt in its own native unit: $k$ field elements for an
+algebraic hash such as Poseidon2~\cite{GKS23}, or $S$ bytes for a byte-oriented
+hash such as Blake3~\cite{BLAKE3}.  Because the unit already matches the hash,
+the salt pays no encoding penalty.  The rule therefore reports two salt
+columns, $k$ and $S$, not as redundant choices but as the right one for each
+kind of hash.
+
+\paragraph{Where the thresholds land.}
+The Poseidon2 hiding benchmarks reach $\secpar=128$ at $k=5$ for BabyBear,
+$k=3$ for Goldilocks, and $k=1$ for BN254; the binding benchmarks at $D=9$,
+$D=5$, and $D=2$.  \Cref{tab:cost-at-128} reports the absolute numbers at those
+crossings, so the panels of \cref{fig:poseidon-cost} can be read for shape
+rather than for values.
+
+\input{tables/cost-at-128}
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=0.95\linewidth]{figures/benchmark_hiding_poseidon_triptych_extra_x.pdf}\\[5pt]
-  \includegraphics[width=0.95\linewidth]{figures/benchmark_binding_poseidon_triptych_extra_x.pdf}
+  \includegraphics[width=\linewidth]{figures/benchmark_hiding_poseidon_triptych_extra_x.pdf}\\[5pt]
+  \includegraphics[width=\linewidth]{figures/benchmark_binding_poseidon_triptych_extra_x.pdf}
   \caption{Poseidon2 hiding cost as salt width grows (top) and binding cost as
   digest width grows (bottom).  Field-coloured lines mark the first measured
   $\secpar\ge128$ and $\secpar\ge256$ points for BabyBear, Goldilocks, and BN254;
@@ -25,14 +36,18 @@ at $D=9$, $D=5$, and $D=2$.
   \label{fig:poseidon-cost}
 \end{figure}
 
+\paragraph{For Poseidon2, certified security is free.}
 For Poseidon2 both the $\secpar\ge128$ and $\secpar\ge256$ thresholds land
-before the first red \textsf{x} for all three fields: the certified parameters
+before the first red \textsf{x} for all three fields.  The certified parameters
 fit inside the permutation block already computed for the rate-width output, so
-correct security costs nothing extra (\cref{fig:hash-blocks}, left): widening the
-digest up to the permutation rate reuses output that is computed anyway.  Bytewise
+correct security costs nothing extra: widening the digest up to the permutation
+rate reuses output that is computed anyway (\cref{fig:hash-blocks}, left).  Bytewise
 Blake3 is the contrast: only the $128$-bit hiding salt clears before its first
 compression-block transition, while wider digests cross a block boundary and pay
-with an extra Blake3 compression block (\cref{fig:hash-blocks}, right).
+with an extra Blake3 compression block (\cref{fig:hash-blocks},
+right).\footnote{The full bytewise Blake3 benchmark results are plotted in the
+same triptych format as \cref{fig:poseidon-cost} and ship with the report
+sources; the prose here summarises their result.}
 \status{empirical; binary tree, $4{,}096$ leaves, $32$ openings}
 
 \begin{figure}[t]

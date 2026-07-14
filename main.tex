@@ -26,45 +26,35 @@ Merkle commitments are the hash-based vector commitments that post-quantum
 proving systems are compiled through, so an argument inherits its soundness and
 zero knowledge directly from the commitment layer beneath it.  A correct
 configuration is subtle: binding and hiding each force a parameter, a digest
-width and a per-leaf salt cardinality, that grows with field size and cannot be
-reused unchanged across fields.  The defaults shipped with \textsf{Arkworks}'
+width and a per-leaf salt cardinality respectively, and both move with the
+field and cannot be reused unchanged across fields.  The defaults shipped with
+\textsf{Arkworks}'
 \textsf{ark-mt} miss this for small fields, leaving both the digest and the salt
 near $30$ bits against a $\secpar=128$ target and breaking binding and hiding at
-once.  Sizing these parameters should be the infrastructure's obligation, not the
+once; we demonstrate the binding break with a deliberate collision found in
+$44$~seconds.  Sizing these parameters should be the infrastructure's obligation, not the
 user's: \textsf{ark-vc} fixes the interface between the security definitions and
 interchangeable hash implementations, and a single rule maps a configuration
-$(\field,\secpar,\RO,\text{interface})$ to the digest width, salt cardinality,
-and query budget it must meet, so an undersized choice is \emph{detected and
-refused} rather than shipped.  We provide a few secure example hashers, but the
+$(\field,\secpar,\RO,\text{interface})$, together with a declared adversary
+query budget, to the digest width and salt cardinality it must meet (or, from
+concrete parameters, back to the security level they actually achieve), so an
+undersized choice is \emph{detected and refused} rather than shipped.  We provide a few secure example hashers, but the
 design exists so that a developer can supply their own hash and receive the
 parameters that make it secure.  The report treats binding and hiding in turn,
-unifies their sizing under that rule, and measures its cost.  A companion Lean~4
-formalisation, one way to discharge these obligations, gives the binding axis
-machine-checked standing and certifies the salt-cardinality lemmas hiding needs,
-leaving the random-oracle composition as the single named open obligation.
+unifies their sizing under that rule, and measures its cost, with the binding
+analysis additionally carrying a machine-checked Lean~4 backing.
 \end{abstract}
 
 % \reportkeywords{vector commitments; Merkle trees; random oracle model; Lean~4;
 %   binding; hiding; \textsf{ark-vc}}
 
-% \paragraph{Contributions.}
-% This report makes four contributions.  First, a security-requirements spine for
-% the commitment layer: a single rule mapping a configuration $(\field,\secpar,H)$
-% to the digest width, salt cardinality, and query budget it must meet, derived
-% once and reused across fields.  Second, the binding axis, sized by that rule and
-% machine-checked end to end over a general Merkle shape, with the binary tree as
-% the exhibited instance.  Third, an honest hiding contract: a
-% typed-randomness interface and machine-checked salt-cardinality lemmas, with the
-% random-oracle composition named as the one obligation still open.  Fourth, the
-% developer payoff: a single place to configure a commitment safely, where
-% under-specification is refused rather than silently accepted.  \Cref{tab:claims}
-% records the status of each claim.
-
-\input{sections/motivation}
+\input{sections/contributions}
+\input{sections/background}
 \input{sections/binding}
 \input{sections/hiding}
 \input{sections/spine}
 \input{sections/cost}
+\input{sections/provenance}
 \input{sections/conclusion}
 
 \begingroup

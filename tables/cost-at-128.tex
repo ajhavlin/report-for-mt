@@ -1,0 +1,28 @@
+%% Measured cost of the first Poseidon2 configuration reaching lambda >= 128
+%% per field and per property.  Source: ark-mt security_parameters benchmark
+%% (benchmark_matrix.csv); binary tree, 4,096 leaves, 32 openings.
+\begin{table}[t]
+  \centering
+  \small
+  \begin{tabular}{llrrrr}
+    \toprule
+    Property & Field & Parameter & Prover (ms) & Verifier (ms) & Proof (kB) \\
+    \midrule
+    Hiding  & BabyBear   & $k=5$ & $25.7$  & $1.03$  & $3.6$  \\
+    Hiding  & Goldilocks & $k=3$ & $39.8$  & $1.51$  & $4.6$  \\
+    Hiding  & BN254      & $k=1$ & $175.2$ & $6.56$  & $10.3$ \\
+    \addlinespace
+    Binding & BabyBear   & $D=9$ & $38.7$  & $1.84$  & $10.1$ \\
+    Binding & Goldilocks & $D=5$ & $40.3$  & $1.37$  & $11.0$ \\
+    Binding & BN254      & $D=2$ & $260.0$ & $11.26$ & $16.4$ \\
+    \bottomrule
+  \end{tabular}
+  \caption{Measured cost of the first Poseidon2 configuration reaching
+  $\secpar\ge128$ per field, for the hiding benchmarks (varying the salt
+  cardinality $k$) and the binding benchmarks (varying the digest width $D$).
+  Prover time is mean commit plus open;
+  verifier time is mean check; proof size is the compressed proof.  Fixed
+  regime as in \cref{fig:poseidon-cost}: binary tree, $4{,}096$ leaves, $32$
+  openings.}
+  \label{tab:cost-at-128}
+\end{table}

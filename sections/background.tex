@@ -1,0 +1,45 @@
+\reportsection{Background}
+\label{sec:background}
+
+\paragraph{What the two properties buy.}
+In the BCS compilation~\cite{BCS16} \textsf{ark-vc}~\cite{ArkVC26} targets, in the lineage of
+Kilian's committed-proof arguments and Micali's CS
+proofs~\cite{Kilian92,Micali00,FS86}, each oracle message is committed and the
+verifier's queries are answered with authenticated openings.  The root is
+fixed into the transcript from the first message, so \emph{binding} enters the
+compiled soundness bound additively~\cite{CDGS24} and lets the soundness
+argument treat committed answers as fixed, while Fiat--Shamir grinding
+inflates the query budget and raises the digest target from roughly
+$2\secpar$ to $3\secpar$ bits.  \emph{Hiding} is what a zero-knowledge
+argument relies on, and it has no protocol-level rescue: the root is read
+before any later message, so salt entropy cannot be traded for code distance,
+query count, or round structure.
+
+\paragraph{Why a rule is needed.}
+The shipped failure is concrete.  At the \code{MerkleHasher} trait of \textsf{ark-mt} the digest
+and salt widths are associated types with no field-size check, and for
+BabyBear at $\secpar=128$ a one-element digest publishes a root in a
+${\sim}30$-bit space.  An honest tree over $2^{20}$ leaves already makes
+roughly $2$~million internal hash calls, far past that space's ${\sim}46{,}000$
+birthday threshold, and a deliberate collision confirms the binding break in
+$44$~seconds; the one-element salt fails hiding the same way.  Neither failure
+implicates the hash function.  Both follow from parameters that do not scale
+with the field, which is exactly what a derivation rule would prevent and why it
+is important that users be made aware.
+
+\input{sections/rule-box}
+
+The justification is short.  A $q\le2^{h}$-query collision search succeeds
+against a $\digestbits$-bit digest with probability about $q^2/2^{\digestbits+1}$,
+so meeting $2^{-\secpar}$ needs $\digestbits\ge\secpar+1+2h$ bits, and $D$ is
+that floor in field elements; $k$ and $S$ give the salt at least $\secpar$
+bits of entropy in the hash's native unit.  The query-budget exponent $h$ is
+the one input that names the adversary model, which is why it is declared
+rather than derived (\cref{sec:binding} prices two choices of it).  One scope
+note applies throughout: every parameter is sized against a classical
+adversary, since Grover search halves effective salt entropy and quantum
+collision search shifts the digest accounting, and a quantum column of the
+rule is deferred.  The report follows the rule by property: binding
+(\cref{sec:binding}) and hiding (\cref{sec:hiding}) carry their own
+definition, failure, and parameter, \cref{sec:spine} states the model behind
+the rule, and \cref{sec:cost} measures the cost.

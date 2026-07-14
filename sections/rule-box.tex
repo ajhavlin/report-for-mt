@@ -1,0 +1,22 @@
+%% The design rule, boxed in Background so Binding and Hiding can instantiate
+%% it without forward reference.  The surrounding model is developed in
+%% \cref{sec:spine}; this box is the statement, not the argument.
+
+\begin{rulebox}
+\noindent\textbf{The design rule.}\quad
+A protocol designer supplies five things: a field~$\field$, a security
+level~$\secpar$, a hash~$H$, a choice of standard or hiding interface, and an
+adversary model, declared as the query-budget exponent~$h$.  Everything else
+is derived.  From $(\field,\secpar,h)$ the parameter constructor produces
+\begin{equation}\label{eq:rule}
+  D=\left\lceil\frac{\secpar+1+2h}{b}\right\rceil,\qquad
+  k=\left\lceil\frac{\secpar}{b}\right\rceil,\qquad
+  S=\left\lceil\frac{\secpar}{8}\right\rceil,
+\end{equation}
+where $b=\lfloor\log_2|\field|\rfloor$ is the conservative bits-per-element.
+Here $D$ is the digest width in field elements, and $k$, $S$ are the field-
+and byte-salt cardinalities.  These are
+not recommendations: each is a checkable obligation that the constructor either
+meets, emitting the derived parameters, or refuses, so a designer can neither
+quietly under-specify nor silently over-claim.
+\end{rulebox}

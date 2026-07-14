@@ -1,0 +1,53 @@
+\reportsection{Contributions}
+\label{sec:contributions}
+
+Merkle commitments are the hash-based vector commitments that post-quantum
+proving systems are compiled through, so the commitment's guarantees become the
+compiled argument's guarantees.  Configuring one is subtle: the digest width
+and the per-leaf salt cardinality both move with the field, and an undersized
+choice still compiles and passes every functional test.  The defaults shipped
+by Arkworks miss this detail, which comes to matter when working in small fields.
+This project makes sizing those parameters the infrastructure's obligation
+rather than the user's.  The contributions:
+
+\begin{itemize}[itemsep=0.35\baselineskip, topsep=0.35\baselineskip]
+  \item \textbf{A parametrisation function for the commitment layer}
+  (\cref{sec:background,sec:spine}): for a chosen field, hash, interface, and
+  adversary query budget, enter a target security level and receive the digest
+  width and salt cardinalities that achieve it, or enter concrete parameters
+  and receive the security level they achieve together with an estimate of
+  their cost.  Computed once, reused across fields, independent of tree arity.
+
+  \item \textbf{A demonstrated break of the shipped defaults}: the
+  field-size-agnostic one-element digest publishes a BabyBear root in a
+  ${\sim}30$-bit space, and a deliberate collision (one root, two accepted
+  openings disagreeing at a shared index) takes $44$~seconds
+  (\cref{sec:binding}); the matching one-element salt breaks hiding outright
+  (\cref{sec:hiding}).
+
+  \item \textbf{A measured cost matrix} (\cref{sec:cost}): we benchmark
+  prover time, verifier time, and proof size across parameter combinations
+  spanning three fields and two hash families, separating security thresholds
+  from cost transitions and showing that for Poseidon2 the certified
+  $\secpar=128$ parameters cost nothing extra (\cref{tab:cost-at-128}).
+
+  \item \textbf{A machine-checked proof line}: we are developing a Lean~4
+  proof~\cite{ZLeanVC26} that the derived parameters give binding and hiding
+  in the appropriate random-oracle model; the parts not yet mechanised are
+  either established by other means or rest on theorems already known and
+  accepted in the literature.
+
+  \item \textbf{A consolidation of the first semester's engineering}: the
+  multiproof compression and its coordinate-encoding backing (out of scope
+  here, but the groundwork for geometric binding), the interface redesign,
+  and the benchmark harness built
+  against the legacy \textsf{Arkworks/crypto-primitives} (\cref{sec:provenance}) are carried
+  into this report, which supplies the specification that work was missing.
+\end{itemize}
+
+\noindent
+To draw the line of contribution plainly: the rule, the break, the benchmark
+matrix and its harness lineage (\cref{sec:provenance}), and the formalisation
+are this work.  The vector-commitment and Merkle notation and the
+concrete-security accounting are~\cite{CY26}'s, and the \textsf{ark-vc} crate
+design belongs to the surrounding project.

@@ -3,18 +3,19 @@
 
 Binding and hiding failed separately and were sized separately, but the two
 sizings are one rule, and that they share a rule is the point of this section.
-The earlier \textsf{ark-crypto-primitives} bought security by hardcoding every
+The earlier \textsf{Arkworks/crypto-primitives}~\cite{ArkCryptoPrimitives} bought security by hardcoding every
 choice, and developers, wanting simpler hash interfaces, variable tree shapes,
 and efficient multi-opening compression, asked for that freedom back.  Granting
 it lets a user control $(\field,\secpar,\RO,\text{interface})$ in full, and the
 danger is exactly that without hardcoded guardrails a misconfiguration stays
 silent.  So the developer faces a question they cannot answer from the interface
 alone: which security claim does my concrete configuration actually support?
-Answering it is our obligation, not theirs: given the four inputs, the
-infrastructure owes back the parameters that must be used, a proof that they meet
-the target, the cost they incur, and the property they buy, so the user can keep
-their attention on their own implementation and read its concrete security off
-the guarantees we give.
+Answering it is our obligation, not theirs.  Given those choices and a
+declared adversary model, the
+infrastructure owes back the parameters that must be used, a proof that they
+meet the target, the cost they incur, and the property they buy.  The user can
+then keep their attention on their own implementation and read its concrete
+security off the guarantees we give.
 
 \subsection{The Object It Sizes}
 \label{sec:object}
@@ -24,25 +25,37 @@ mathematical boundary does not drift from the reference the implementation
 follows~\cite{CY26}.
 
 \begin{definition}[Vector commitment scheme]\label{def:vcgeneral}
-A \emph{vector commitment scheme} over alphabet $\MTAlphabet$ and length
+A \emph{vector commitment scheme}~\cite{CF13} over alphabet $\MTAlphabet$ and length
 $\MTMessageLength$ is a triple $\VC=(\Commit,\Open,\VCCheck)$:
-$\Commit(\msgvec)\to(\comm,\aux)$ binds a message
-$\msgvec\in\MTAlphabet^{\MTMessageLength}$ to a short commitment $\comm$ and
-retains committer state $\aux$; $\Open(\aux,\idxset)\to\opening$ authenticates an
-index set $\idxset\subseteq[\MTMessageLength]$; and
-$\VCCheck(\comm,\idxset,\MTMessageSubVector,\opening)\to\bits$ decides whether
-$\opening$ authenticates the subvector $\MTMessageSubVector$ at $\idxset$ against
-$\comm$, where for an honest committer $\MTMessageSubVector$ is exactly the
-committed message $\msgvec$ restricted to the positions in $\idxset$.  A scheme is
-\emph{complete} (\cref{def:vc-complete}) and
+\begin{itemize}
+  \item $\Commit(\msgvec)\to(\comm,\aux)$ binds a message
+  $\msgvec\in\MTAlphabet^{\MTMessageLength}$ to a short commitment $\comm$ and
+  retains committer state $\aux$;
+  \item $\Open(\aux,\idxset)\to\opening$ authenticates an index set
+  $\idxset\subseteq[\MTMessageLength]$;
+  \item $\VCCheck(\comm,\idxset,\MTMessageSubVector,\opening)\to\bits$ decides
+  whether $\opening$ authenticates the subvector $\MTMessageSubVector$ at
+  $\idxset$ against $\comm$, where for an honest committer
+  $\MTMessageSubVector$ is exactly the committed message $\msgvec$ restricted
+  to the positions in $\idxset$.
+\end{itemize}
+A scheme is \emph{complete} (\cref{def:vc-complete}) and
 \emph{position-binding} (\cref{def:vc-binding}), and may implement optional
 extensions---hiding, treated here, plus updatability, aggregation, functional
 opening, and knowledge soundness---which \textsf{ark-vc}'s capability model
 accommodates but this report does not treat.
 \end{definition}
 
+\begin{definition}[Completeness]\label{def:vc-complete}
+$\VC$ is \emph{complete} if for every $\msgvec\in\MTAlphabet^{\MTMessageLength}$
+and every $\idxset\subseteq[\MTMessageLength]$ the honest
+$\Commit$--$\Open$--$\VCCheck$ round trip accepts $\msgvec_{\idxset}$ with
+probability~$1$.  For Merkle this is honest reconstruction of the root from an
+opening.
+\end{definition}
+
 \begin{definition}[Merkle commitment scheme]\label{def:vc}
-The \emph{Merkle commitment scheme}
+The \emph{Merkle commitment scheme}~\cite{Merkle88}
 $\MTSymbol=(\MTCommit,\allowbreak\MTOpen,\allowbreak\MTCheck)$
 instantiates \cref{def:vcgeneral} in the random-oracle model over a general
 Merkle shape $G_\ell$ of depth $d=\max_i d_i$, the deepest of the per-leaf depths
@@ -50,32 +63,31 @@ $d_i$ over leaves $i$: the three algorithms query a
 shared oracle $\ROFunction$, the commitment is the tree root, and the committer
 state is the retained salts and labels.  The binary tree is the arity-$2$ subset
 of this shape.  Two parameters carry the security: the digest
-width $\ROOutputSize$ governs binding and the salt size $\MTSaltSize$ governs
-hiding, with no tuning of one supplying what the other lacks.  There is no
-cryptographic $\Setup$: the public parameter is the hash, so $\td=\bot$,
-extraction is a ROM query-trace argument, and standard-model equivocation is
-unavailable, because with $\td=\bot$ there is no trapdoor to program and
-equivocation would require one.
+width $\digestbits$ governs binding and the salt size $\MTSaltSize$ governs
+hiding, with no tuning of one supplying what the other lacks.
 \end{definition}
+
+\begin{limitation}[No trapdoor, so no standard-model equivocation]
+\label{lim:no-trapdoor}
+$\MTSymbol$ has no cryptographic $\Setup$: the public parameter is the hash
+itself, so the trapdoor is empty ($\td=\bot$).  This shapes what can even be
+asked of the scheme.  Extraction cannot program a trapdoor and must instead
+argue from the adversary's random-oracle query trace, and standard-model
+equivocation, which opens one commitment to two values precisely by
+programming a trapdoor, has nothing to program.  Equivocation is therefore
+unreachable for this scheme by construction, not merely unproved.
+\end{limitation}
 
 \subsection{The Rule}
 \label{sec:rule}
 
-A protocol designer supplies four things: a field~$\field$, a security
-level~$\secpar$, a hash~$H$, and a choice of standard or hiding interface.
-Everything else is derived.  From $(\field,\secpar,h)$ the parameter constructor
-produces
-\[
-  D=\left\lceil\frac{\secpar+1+2h}{b}\right\rceil,\qquad
-  k=\left\lceil\frac{\secpar}{b}\right\rceil,\qquad
-  S=\left\lceil\frac{\secpar}{8}\right\rceil,
-\]
-where $b=\lfloor\log_2|\field|\rfloor$ is the conservative bits-per-element and
-$h$ bounds the adversarial query budget.  Here $D$ is the digest width in field
-elements, and $k$, $S$ are the field- and byte-salt cardinalities.  These are
-not recommendations: each is a checkable obligation that the constructor either
-meets, emitting the derived parameters, or refuses, so a designer can neither
-quietly under-specify nor silently over-claim.
+The rule itself was stated in the box of \cref{sec:background}: from the
+designer's interface-level inputs $(\field,\secpar,H,\text{interface})$ and
+the declared adversary budget $h$, the constructor
+derives the digest width $D$, the field-salt cardinality $k$, and the byte-salt
+cardinality $S$ of \cref{eq:rule}, and either meets each obligation or refuses
+the configuration.  What remains to establish here is what the rule does not
+depend on, and what it produces per field.
 
 The rule is arity-independent.  $(D,k,S)$ depends only on $(\field,\secpar,h)$,
 while the tree shape and arity enter only through the query budget $h$ and the
@@ -83,6 +95,6 @@ cost.  The same target
 therefore sizes any Merkle shape and produces different outputs per field: for
 BabyBear ($b=30$, $h=64$) it gives $D=9$, $k=5$, $S=16$; for BN254
 ($b\approx254$) it gives $D=2$, $k=1$, $S=16$.  These are not interchangeable,
-and the $44$-second break of \cref{sec:motivation} used a $D=1$ configuration,
+and the $44$-second break of \cref{sec:background} used a $D=1$ configuration,
 one of the hashers \textsf{Arkworks} currently ships, which is exactly the kind
 of undersizing the constructor now refuses.

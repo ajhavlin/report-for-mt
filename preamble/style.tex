@@ -155,6 +155,22 @@
   \par\medskip
 }
 
+%% Plain framed box for a statement the rest of the report instantiates.
+%% Deliberately unstyled: a thin rule, no tint, no card geometry.
+\newsavebox{\ruleboxcontent}
+\newenvironment{rulebox}{%
+  \par\medskip
+  \setlength{\fboxsep}{10pt}%
+  \setlength{\fboxrule}{0.6pt}%
+  \begin{lrbox}{\ruleboxcontent}%
+  \begin{minipage}{\dimexpr\linewidth-2\fboxsep-2\fboxrule\relax}%
+}{%
+  \end{minipage}%
+  \end{lrbox}%
+  \noindent\fbox{\usebox{\ruleboxcontent}}%
+  \par\medskip
+}
+
 \newcommand{\takeaway}[1]{%
   \par\smallskip\noindent\textbf{Takeaway.} #1\par
 }

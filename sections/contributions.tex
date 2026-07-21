@@ -1,6 +1,9 @@
 \reportsection{Contributions}
 \label{sec:contributions}
 
+AZ - I don't think this paragraph is doing work for you. I'd probably scrap entirely
+revise how you feel appropriate the new version I'm suggesting for you below.
+
 Merkle commitments are the hash-based vector commitments that post-quantum
 proving systems are compiled through, so the commitment's guarantees become the
 compiled argument's guarantees.  Configuring one is subtle: the digest width
@@ -10,6 +13,13 @@ by Arkworks miss this detail, which comes to matter when working in small fields
 This project makes sizing those parameters the infrastructure's obligation
 rather than the user's.  The contributions:
 
+AZ - Merkle commitments are essential to modern proof systems, but practioners
+have an unreasonable challenge of balancing security and performance in the context
+of complex security definitions and extensive configuration levers. We aim to reduce
+this burden on the user by lifting it into infrastructure. With this mind, we highlight
+four main contributions:
+
+AZ - I find all of these titles hard to understand. 
 \begin{itemize}[itemsep=0.35\baselineskip, topsep=0.35\baselineskip]
   \item \textbf{A parametrisation function for the commitment layer}
   (\cref{sec:background,sec:spine}): for a chosen field, hash, interface, and
@@ -18,6 +28,7 @@ rather than the user's.  The contributions:
   and receive the security level they achieve together with an estimate of
   their cost.  Computed once, reused across fields, independent of tree arity.
 
+  AZ - What "shipped defaults"? That repo isn't published. I would probably remove this.
   \item \textbf{A demonstrated break of the shipped defaults}: the
   field-size-agnostic one-element digest publishes a BabyBear root in a
   ${\sim}30$-bit space, and a deliberate collision (one root, two accepted
@@ -25,18 +36,21 @@ rather than the user's.  The contributions:
   (\cref{sec:binding}); the matching one-element salt breaks hiding outright
   (\cref{sec:hiding}).
 
+  AZ - This is probably good
   \item \textbf{A measured cost matrix} (\cref{sec:cost}): we benchmark
   prover time, verifier time, and proof size across parameter combinations
   spanning three fields and two hash families, separating security thresholds
   from cost transitions and showing that for Poseidon2 the certified
   $\secpar=128$ parameters cost nothing extra (\cref{tab:cost-at-128}).
 
+  AZ - You can keep this but I don't really know what you mean by "appropriate ROM" maybe just pick one and keep it simple?
   \item \textbf{A machine-checked proof line}: we are developing a Lean~4
   proof~\cite{ZLeanVC26} that the derived parameters give binding and hiding
   in the appropriate random-oracle model; the parts not yet mechanised are
   either established by other means or rest on theorems already known and
   accepted in the literature.
 
+  AZ - consolidation of optimal multiproof impl <-- you can keep this but make it very brief
   \item \textbf{A consolidation of the first semester's engineering}: the
   multiproof compression and its coordinate-encoding backing (out of scope
   here, but the groundwork for geometric binding), the interface redesign,
@@ -46,6 +60,7 @@ rather than the user's.  The contributions:
 \end{itemize}
 
 \noindent
+AZ - Delete.
 To draw the line of contribution plainly: the rule, the break, the benchmark
 matrix and its harness lineage (\cref{sec:provenance}), and the formalisation
 are this work.  The vector-commitment and Merkle notation and the

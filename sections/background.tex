@@ -1,6 +1,7 @@
 \reportsection{Background}
 \label{sec:background}
 
+AZ - What two properties? I really don't understand this section it's a firehose of out of context facts and sentences
 \paragraph{What the two properties buy.}
 In the BCS compilation~\cite{BCS16} \textsf{ark-vc}~\cite{ArkVC26} targets, in the lineage of
 Kilian's committed-proof arguments and Micali's CS
@@ -43,3 +44,15 @@ rule is deferred.  The report follows the rule by property: binding
 (\cref{sec:binding}) and hiding (\cref{sec:hiding}) carry their own
 definition, failure, and parameter, \cref{sec:spine} states the model behind
 the rule, and \cref{sec:cost} measures the cost.
+
+AZ - If this is truly meant to be background ... you want to explain that traditionally people think about merkle commitments as a tree with arity 2 and a single hasher type f at every level. More recently, people have an interest in changing arity and hashers at different levels for performance and recursion friendliness and this adds complexity to security analysis.
+
+Then you could very briefly summarize basically the book's coverage of whatever properties are most important: binding, hiding, whatever you think is sufficient and in scope.
+
+Key definitions can go here but they need to be much much more concise then they currently read.
+
+Also, if you really want to talk about BCS it needs to be incredibly succinct and I don't see how you can do this without before defining an IOP as a popular construction of zero knowledge proof systems in like two sentences or less. I leave this to you to decide but I have my doubts.
+
+Then you're done. This is the background of what a merkle commitment is and what about it is important. 
+
+AZ - Next, you want to walk through each of your four contributions as one section each (in whatever order you find best).

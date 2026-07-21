@@ -1,0 +1,49 @@
+This is BibTeX, Version 0.99d (TeX Live 2023)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: main.aux
+The style file: alpha.bst
+Database file #1: references.bib
+Warning--empty publisher in CY26
+Warning--empty publisher in Merkle88
+You've used 13 entries,
+            2543 wiz_defined-function locations,
+            646 strings with 6316 characters,
+and the built_in function-call counts, 5537 in all, are:
+= -- 551
+> -- 217
+< -- 17
++ -- 74
+- -- 72
+* -- 363
+:= -- 832
+add.period$ -- 41
+call.type$ -- 13
+change.case$ -- 77
+chr.to.int$ -- 13
+cite$ -- 15
+duplicate$ -- 243
+empty$ -- 446
+format.name$ -- 91
+if$ -- 1189
+int.to.chr$ -- 1
+int.to.str$ -- 0
+missing$ -- 9
+newline$ -- 69
+num.names$ -- 39
+pop$ -- 109
+preamble$ -- 1
+purify$ -- 91
+quote$ -- 0
+skip$ -- 222
+stack$ -- 0
+substring$ -- 300
+swap$ -- 78
+text.length$ -- 17
+text.prefix$ -- 6
+top$ -- 0
+type$ -- 100
+warning$ -- 2
+while$ -- 53
+width$ -- 15
+write$ -- 171
+(There were 2 warnings)

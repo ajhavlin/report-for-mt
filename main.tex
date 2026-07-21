@@ -22,27 +22,20 @@
 \makereporttitle
 
 \begin{abstract}
-Merkle commitments are the hash-based vector commitments that post-quantum
-proving systems are compiled through, so an argument inherits its soundness and
-zero knowledge directly from the commitment layer beneath it.  A correct
-configuration is subtle: binding and hiding each force a parameter, a digest
-width and a per-leaf salt cardinality respectively, and both move with the
-field and cannot be reused unchanged across fields.  The defaults shipped with
-\textsf{Arkworks}'
-\textsf{ark-mt} miss this for small fields, leaving both the digest and the salt
-near $30$ bits against a $\secpar=128$ target and breaking binding and hiding at
-once; we demonstrate the binding break with a deliberate collision found in
-$44$~seconds.  Sizing these parameters should be the infrastructure's obligation, not the
-user's: \textsf{ark-vc} fixes the interface between the security definitions and
-interchangeable hash implementations, and a single rule maps a configuration
-$(\field,\secpar,\RO,\text{interface})$, together with a declared adversary
-query budget, to the digest width and salt cardinality it must meet (or, from
-concrete parameters, back to the security level they actually achieve), so an
-undersized choice is \emph{detected and refused} rather than shipped.  We provide a few secure example hashers, but the
-design exists so that a developer can supply their own hash and receive the
-parameters that make it secure.  The report treats binding and hiding in turn,
-unifies their sizing under that rule, and measures its cost, with the binding
-analysis additionally carrying a machine-checked Lean~4 backing.
+Merkle commitment schemes are increasingly essential tools in the construction
+of post quantum secure cryptography in general and zero knowledge proof systems
+specifically. While widely accepted techniques are intuitive to describe, their
+apparent simplicity disguises the potential for critical parameterization errors. 
+Practitioners are pulled in two directions: oversized parameters make the scheme
+slow, while under configuration leads to concrete vulnerabilities in the higher
+level protocol. In this effort, we address these challenges leveraging an interface
+that bridges security definitions with scheme configuration. We implement this
+infrastructure in Rust for the Arkworks ecosystem and show that undersized
+concrete instantiations (based on a security parameter) are detected and refused
+rather than shipped. Additionally, we provide methodology for describing the
+relationship between security and performance for properties like binding and
+hiding. Finally, we provide machine-checked analysis of the binding property
+as described in this framework using Lean 4.
 \end{abstract}
 
 % \reportkeywords{vector commitments; Merkle trees; random oracle model; Lean~4;

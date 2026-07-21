@@ -1,0 +1,69 @@
+\begin{thebibliography}{OANWO20}
+
+\bibitem[{Ark}25]{ArkCryptoPrimitives}
+{Arkworks contributors}.
+\newblock \textsf{Arkworks/crypto-primitives}: Cryptographic primitives for the \textsf{arkworks} ecosystem.
+\newblock \url{https://github.com/arkworks-rs/crypto-primitives/}, 2025.
+
+\bibitem[{Ark}26]{ArkVC26}
+{Arkworks contributors}.
+\newblock \textsf{ark-vc}: Vector commitment interfaces and {Merkle} instantiations.
+\newblock \url{https://github.com/arkworks-rs/z/}, 2026.
+\newblock Crate under development in the \textsf{arkworks} project.
+
+\bibitem[BSCS16]{BCS16}
+Eli Ben-Sasson, Alessandro Chiesa, and Nicholas Spooner.
+\newblock Interactive oracle proofs.
+\newblock In {\em Theory of Cryptography (TCC)}, volume 9986 of {\em LNCS}, pages 31--60, 2016.
+
+\bibitem[CDGS24]{CDGS24}
+Alessandro Chiesa, Marcel Dall'Agnol, Ziyi Guan, and Nicholas Spooner.
+\newblock On the security of succinct interactive arguments from vector commitments, September 2024.
+\newblock Manuscript.
+
+\bibitem[CF13]{CF13}
+Dario Catalano and Dario Fiore.
+\newblock Vector commitments and their applications.
+\newblock In {\em Public-Key Cryptography (PKC)}, volume 7778 of {\em LNCS}, pages 55--72, 2013.
+
+\bibitem[CY26]{CY26}
+Alessandro Chiesa and Eylon Yogev.
+\newblock {\em Building Cryptographic Proofs from Hash Functions}.
+\newblock 2026.
+\newblock Draft.
+
+\bibitem[FS87]{FS86}
+Amos Fiat and Adi Shamir.
+\newblock How to prove yourself: Practical solutions to identification and signature problems.
+\newblock In {\em CRYPTO '86}, volume 263 of {\em LNCS}, pages 186--194, 1987.
+
+\bibitem[GKS23]{GKS23}
+Lorenzo Grassi, Dmitry Khovratovich, and Markus Schofnegger.
+\newblock {Poseidon2}: A faster version of the {Poseidon} hash function.
+\newblock In {\em AFRICACRYPT 2023}, volume 14064 of {\em LNCS}, pages 177--203, 2023.
+
+\bibitem[Kil92]{Kilian92}
+Joe Kilian.
+\newblock A note on efficient zero-knowledge proofs and arguments.
+\newblock In {\em Symposium on Theory of Computing (STOC)}, pages 723--732, 1992.
+
+\bibitem[Mer88]{Merkle88}
+Ralph~C. Merkle.
+\newblock A digital signature based on a conventional encryption function.
+\newblock In {\em CRYPTO '87}, volume 293 of {\em LNCS}, pages 369--378. 1988.
+
+\bibitem[Mic00]{Micali00}
+Silvio Micali.
+\newblock Computationally sound proofs.
+\newblock {\em SIAM Journal on Computing}, 30(4):1253--1298, 2000.
+
+\bibitem[OANWO20]{BLAKE3}
+Jack O'Connor, Jean-Philippe Aumasson, Samuel Neves, and Zooko Wilcox-O'Hearn.
+\newblock {BLAKE3}: One function, fast everywhere, 2020.
+
+\bibitem[{z-l}26]{ZLeanVC26}
+{z-lean contributors}.
+\newblock {VectorCommitment}: Executable {Merkle} commitments and security proofs in {Lean}.
+\newblock \url{https://github.com/z-tech/z-lean/}, 2026.
+
+\end{thebibliography}

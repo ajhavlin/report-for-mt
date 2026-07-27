@@ -15,6 +15,7 @@
 \usepackage{booktabs}
 \usepackage{tabularx}
 \usepackage{graphicx}
+\usepackage{tikz}
 \usepackage{float}
 \usepackage{xcolor}
 \usepackage{xspace}
@@ -94,6 +95,9 @@
 \newaliascnt{proposition}{finding}
 \newtheorem{proposition}[proposition]{Proposition}
 \aliascntresetthe{proposition}
+\newaliascnt{lemma}{finding}
+\newtheorem{lemma}[lemma]{Lemma}
+\aliascntresetthe{lemma}
 \theoremstyle{reportdefinition}
 \newaliascnt{definition}{finding}
 \newtheorem{definition}[definition]{Definition}
@@ -110,6 +114,7 @@
 
 \crefname{finding}{Finding}{Findings}
 \crefname{proposition}{Proposition}{Propositions}
+\crefname{lemma}{Lemma}{Lemmas}
 \crefname{definition}{Definition}{Definitions}
 \crefname{experiment}{Experiment}{Experiments}
 \crefname{method}{Method}{Methods}

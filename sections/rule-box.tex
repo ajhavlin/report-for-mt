@@ -1,6 +1,6 @@
-%% The design rule, boxed in Background so Binding and Hiding can instantiate
-%% it without forward reference.  The surrounding model is developed in
-%% \cref{sec:spine}; this box is the statement, not the argument.
+%% V2 copy of the design rule, boxed in Background so Binding and Hiding can
+%% instantiate it without forward reference.  This box states the rule, and the
+%% justification follows it in Background.
 
 \begin{rulebox}
 \noindent\textbf{The design rule.}\quad
@@ -15,8 +15,8 @@ is derived.  From $(\field,\secpar,h)$ the parameter constructor produces
 \end{equation}
 where $b=\lfloor\log_2|\field|\rfloor$ is the conservative bits-per-element.
 Here $D$ is the digest width in field elements, and $k$, $S$ are the field-
-and byte-salt cardinalities.  These are
-not recommendations: each is a checkable obligation that the constructor either
-meets, emitting the derived parameters, or refuses, so a designer can neither
-quietly under-specify nor silently over-claim.
+and byte-salt cardinalities.  Each output is a checkable obligation.  The
+constructor either meets it and emits the derived parameters, or it refuses.
+A designer can therefore neither quietly under-specify nor silently
+over-claim.
 \end{rulebox}

@@ -1,51 +1,62 @@
 \reportsection{Hiding}
 \label{sec:hiding}
 
-\subsection{Definition and Failure}
-\label{sec:hiding-def}
+A zero-knowledge protocol relies on more than hiding, and the book's stronger requirement is
+\emph{equivocation}, which a Merkle commitment satisfies in the random-oracle model through
+an inefficient simulator that programs the oracle, though never in the \emph{trapdoor} form
+an efficient simulator would need, since there is no $\Setup$ secret to program
+($\td=\bot$)~\cite{CY26}.  We work with the indistinguishability form of hiding below, which
+rests entirely on the salt space, and show that the current salt is too small to carry it.
 
 \begin{definition}[Hiding]\label{def:vc-hiding}
 A randomised $\VC$ whose $\Commit$ draws salts from a space $\rndspace$ is
 \emph{hiding} if, for any two messages of length $\MTMessageLength$ and any
 adversary that after seeing $\comm$ adaptively opens positions on which the
 messages agree, the advantage in deciding which was committed is at most
-$\negl$.  For Merkle this refines to \emph{root hiding}---the real root is
-statistically close to one simulated without $\msgvec$---strengthened to
+$\negl$.  For Merkle this refines to \emph{root hiding}, meaning the real root is
+statistically close to one simulated without $\msgvec$, strengthened to
 \emph{selective-opening hiding}, which must also hide through the disclosed
 salts and authentication paths of partial openings.
 \end{definition}
 
-A Merkle salt is a random per-leaf nonce: each leaf is itself a basic
-commitment $H(\msgvec_i,\text{salt})$, and the salt travels in the
-authentication path beside the sibling digests so the verifier can recompute
+In a Merkle commitment scheme, we refer to salt simply as the random per-leaf nonce.
+Each leaf is itself a basic commitment $H(\msgvec_i,\text{salt})$, and the salt travels
+in the authentication path beside the sibling digests so the verifier can recompute
 the leaf.  Opening one leaf commitment under two different salts would force a
 hash collision, so the salt binds a value to its position even as it hides it.
 Hiding then rests entirely on the salt space, which must be both well sampled
-and large enough to resist search within the security budget.  A deterministic
-salt satisfies neither, since the receiver can recompute candidate leaf
-commitments.  Unlike binding's additive contribution, there is
-no protocol-level rescue, because the root is read from the transcript before
-any later message.
+and large enough to resist search within the security budget, neither of which a
+deterministic salt satisfies, since the receiver can recompute candidate leaf commitments.
 
-\subsection{Sizing and Contract}
-\label{sec:hiding-valid}
+The digest and the salt scale differently in the query budget, which is what
+\cref{eq:rule} is tracking when it derives $D$ from $h$ and derives $k$ and $S$ from
+$\secpar$ alone.  A binding adversary wins on any collision among its own queries, so its
+advantage grows as $\querybudget^2/2^{\digestbits}$ and the digest has to carry $2h$ bits of
+headroom.  A hiding adversary has to hit one particular salted leaf input, so its advantage
+grows as $\msglen\querybudget/2^{\saltbits}$, and the salt needs only $\secpar$ bits.
 
-The rule (\cref{eq:rule}) sets the salt cardinality to $k=5$ field salts or $S=16$ byte salts for
-BabyBear at $\secpar=128$, each defining a space of at least $2^{128}$ elements.
-These cardinalities are machine-checked.
+\begin{proposition}[Salt cardinality]\label{prop:salt-card}
+Let the salt be drawn from $k$ elements of a field with $b=\lfloor\log_2|\field|\rfloor$
+bits per element, or from $S$ bytes.  Then $|\rndspace|\ge2^{\secpar}$ whenever
+$k\ge\lceil\secpar/b\rceil$ or $S\ge\lceil\secpar/8\rceil$.
+\status{Lean-backed}
+\end{proposition}
 
-What remains is an \emph{intended reduction}, not a machine-checked theorem.  The
-root-hiding obligation has the form
-\[
-  \Adv{hide}(\ThetaVC)
-  \le \frac{\msglen\querybudget}{2^{\saltbits}}
-  + \varepsilon_{\mathrm{internal}}(\digestbits,\querybudget,\shape),
-\]
-where the terms that appear represent the two bad events: a query to a hidden salted leaf input, or an internal
-hash collision as the simulation rebuilds the tree from the leaves up to the
-root.  The bound is written against the intended game, in which the honest
-experiment samples the oracle jointly with the salts, and discharging that game
-is the open step.  The salt-hit term rests on a standard averaging step that is
-not yet formalised.  The certified salt cardinalities are prerequisites for
-this bound, not the theorem, and lifting the result to the selective-opening
-target is the composition step after that.
+This is what \cref{eq:rule} computes for $k$ and $S$ and the one part of hiding that is
+machine-checked, while the bound it feeds into remains an \emph{intended reduction}
+(\cref{app:hiding-reduction}).
+
+Looking again at the Arkworks library, the current hiding hasher repeats the
+undersized-parameter mistake we saw for binding, this time in the salt space
+(\cref{app:hasher-trait}): the salt is one field element for every field and every target
+$\lambda$, drawn uniformly, so the sampling requirement is met and what falls short is the
+number of values it can take.
+
+Take a target security parameter $\lambda=128$ and BabyBear again.  Each field element
+carries at most $b=\lfloor\log_2 p\rfloor=30$ bits under the conservative accounting of
+\cref{eq:rule}, so a one-element salt ranges over roughly $2^{30}$ values.  An
+adversary who knows the two candidate messages recovers which was committed by hashing
+$2^{30}$ candidate leaves against the opened position.  Reaching $2^{\lambda}$ instead needs
+$k=\lceil\lambda/b\rceil=\lceil128/30\rceil=5$ elements.  The same constructor gives
+$k=3$ for Goldilocks at $b=63$, and $k=1$ for BN254 at $b=253$, where a single element
+already carries more than the target.

@@ -1,68 +1,47 @@
 \reportsection{Contributions}
 \label{sec:contributions}
 
-AZ - I don't think this paragraph is doing work for you. I'd probably scrap entirely
-revise how you feel appropriate the new version I'm suggesting for you below.
+Merkle commitments are essential to modern proof systems, but developers often have to balance
+performant systems with evolving security requirements and configurability, leaving underconfigured
+schemes vulnerable. We aim to lift that burden into infrastructure.
 
-Merkle commitments are the hash-based vector commitments that post-quantum
-proving systems are compiled through, so the commitment's guarantees become the
-compiled argument's guarantees.  Configuring one is subtle: the digest width
-and the per-leaf salt cardinality both move with the field, and an undersized
-choice still compiles and passes every functional test.  The defaults shipped
-by Arkworks miss this detail, which comes to matter when working in small fields.
-This project makes sizing those parameters the infrastructure's obligation
-rather than the user's.  The contributions:
-
-AZ - Merkle commitments are essential to modern proof systems, but practioners
-have an unreasonable challenge of balancing security and performance in the context
-of complex security definitions and extensive configuration levers. We aim to reduce
-this burden on the user by lifting it into infrastructure. With this mind, we highlight
-four main contributions:
-
-AZ - I find all of these titles hard to understand. 
 \begin{itemize}[itemsep=0.35\baselineskip, topsep=0.35\baselineskip]
-  \item \textbf{A parametrisation function for the commitment layer}
-  (\cref{sec:background,sec:spine}): for a chosen field, hash, interface, and
-  adversary query budget, enter a target security level and receive the digest
-  width and salt cardinalities that achieve it, or enter concrete parameters
-  and receive the security level they achieve together with an estimate of
-  their cost.  Computed once, reused across fields, independent of tree arity.
-
-  AZ - What "shipped defaults"? That repo isn't published. I would probably remove this.
-  \item \textbf{A demonstrated break of the shipped defaults}: the
-  field-size-agnostic one-element digest publishes a BabyBear root in a
-  ${\sim}30$-bit space, and a deliberate collision (one root, two accepted
-  openings disagreeing at a shared index) takes $44$~seconds
-  (\cref{sec:binding}); the matching one-element salt breaks hiding outright
-  (\cref{sec:hiding}).
-
-  AZ - This is probably good
-  \item \textbf{A measured cost matrix} (\cref{sec:cost}): we benchmark
-  prover time, verifier time, and proof size across parameter combinations
-  spanning three fields and two hash families, separating security thresholds
-  from cost transitions and showing that for Poseidon2 the certified
-  $\secpar=128$ parameters cost nothing extra (\cref{tab:cost-at-128}).
-
-  AZ - You can keep this but I don't really know what you mean by "appropriate ROM" maybe just pick one and keep it simple?
-  \item \textbf{A machine-checked proof line}: we are developing a Lean~4
-  proof~\cite{ZLeanVC26} that the derived parameters give binding and hiding
-  in the appropriate random-oracle model; the parts not yet mechanised are
-  either established by other means or rest on theorems already known and
-  accepted in the literature.
-
-  AZ - consolidation of optimal multiproof impl <-- you can keep this but make it very brief
-  \item \textbf{A consolidation of the first semester's engineering}: the
-  multiproof compression and its coordinate-encoding backing (out of scope
-  here, but the groundwork for geometric binding), the interface redesign,
-  and the benchmark harness built
-  against the legacy \textsf{Arkworks/crypto-primitives} (\cref{sec:provenance}) are carried
-  into this report, which supplies the specification that work was missing.
+  \item \textbf{Main contribution}: we provide a rule for evaluating a Merkle commitment
+  scheme's binding and hiding security against a target security parameter $\lambda$,
+  field $\mathbb{F}$, hash function (or random oracle) $\mathcal{H}$, and hasher
+  implementation (\cref{sec:background}).
+  \item \textbf{Cost measurement}: we benchmark prover time, verifier time, and proof
+  size across parameter combinations spanning three fields and two hash families,
+  comparing desired security thresholds with their cost.
+  \item \textbf{Machine checking our results}: we give the binding derivation formalised
+  in Lean~4~\cite{ZLeanVC26}.
+  \item \textbf{Batch opening consolidation}: we consolidate Arkworks' batch opening onto
+  CoSet pruning, carrying forward the first semester's proof-size win over its
+  prefix-pruning predecessor: roughly $360$\,kB down to roughly $33$\,kB at $4{,}096$
+  opened leaves.
 \end{itemize}
 
-\noindent
-AZ - Delete.
-To draw the line of contribution plainly: the rule, the break, the benchmark
-matrix and its harness lineage (\cref{sec:provenance}), and the formalisation
-are this work.  The vector-commitment and Merkle notation and the
-concrete-security accounting are~\cite{CY26}'s, and the \textsf{ark-vc} crate
-design belongs to the surrounding project.
+In two semesters of work we investigated the structure of Merkle trees and Merkle
+commitments in depth, and what does and does not work in our favour.  Chronologically,
+we started by looking at feature requests against the Merkle tree
+implementation in Arkworks' \textit{crypto\_primitives}, which already sketched out many
+missing features, evidenced by an RFC (\cref{app:rfc}).  We scoped
+the problem to optimal batched index-proof pruning.  As a reference we used Chiesa and Yogev's
+\emph{Building Cryptographic Proofs from Hash Functions}~\cite{CY26}, for its close
+agreement with our definitions and the rigour of its proofs.  For batch proofs, the book
+outlines a pruning algorithm we call \emph{CoSet pruning} (\cref{app:coset}).  Arkworks'
+\textit{crypto\_primitives} used a distinct algorithm for the same objective, which we
+call \emph{prefix pruning} (\cref{app:prefix}).  That comparison found no statistically
+significant trade-off on prover or verifier time and significantly saved on proof size.
+
+In the second semester we shifted to the proposed Arkworks design shift, aimed at
+unifying tools that had previously been specific to individual constraint systems into
+one IOR/polynomial IOP compiler (\cref{app:compilation}).  Our contribution there was scoped
+to evaluating Vector Commitments and their Merkle-commitment subset for the hiding and
+binding security they bring to the library.  A VC scheme must satisfy $\lambda$-bit
+binding (\cref{sec:background}) and, optionally, $\lambda$-bit hiding
+(\cref{sec:background}).  For a Merkle scheme, both properties are enforced through the
+underlying hasher, and an undersized hasher still compiles and passes every functional
+test, which is what makes the problem easy to miss.  Our research surfaced concerns that
+the design shift had overlooked, and this report makes them explicit for developers and
+users constructing a hasher for a target hiding and binding security level.

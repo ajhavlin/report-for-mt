@@ -1,52 +1,29 @@
 \reportsection{Binding}
 \label{sec:binding}
+Binding is a key property of any vector commitment scheme, and different schemes have
+different notions of it~\cite{CY26}: subvector position binding, its single-position
+specialisation, and the weak variant that requires an honestly generated commitment. We
+look at subvector position binding of a Merkle commitment scheme and show that it can be
+reduced to the collision resistance of the underlying hash function. For a given hash
+function, collision resistance gives us a bound that we can evaluate against the desired
+security parameter. Specifically, we show that this bound falls short of common target
+$\lambda$-bit collision resistance for single field elements in small fields. The size of
+the digest output by a concrete hasher is inextricably linked to the underlying field we
+operate over. This realisation led us to flag a bug in Arkworks in which the hasher
+implementation would output a single field element (digest size) regardless of the size of
+the underlying field.
 
-\subsection{Definition and Failure}
-\label{sec:binding-def}
-
-\begin{definition}[Position binding]\label{def:vc-binding}
-$\VC$ is \emph{position binding} if no efficient adversary outputs a commitment
+\begin{definition}[Subvector position binding]\label{def:vc-binding}
+$\VC$ is \emph{subvector position binding} if no efficient adversary outputs a commitment
 $\comm$ with two accepted openings
 $(\idxset_b,\MTMessageSubVector_b,\opening_b)$ that disagree at some
 $i\in\idxset_0\cap\idxset_1$, except with probability $\negl$.  The commitment
-has no honest-generation requirement.  A single conflict at a shared index is
-the local witness that binding has failed.
+has no honest-generation requirement.
 \end{definition}
 
-\paragraph{One conflict is the whole failure.}
-Position binding is what lets a soundness argument treat each queried answer as
-the unique value the commitment fixes the moment $\comm$ is published, before
-the query set is chosen.
-
-\subsection{Sizing and Validation}
-\label{sec:binding-valid}
-
-\paragraph{Two adversary models, two digest targets.}
-The concrete-security accounting behind the digest floor is the
-worst-case-versus-average-case split of~\cite{CY26}: at $\secpar=128$, binding
-against a worst-case adversary needs a $383$-bit output, while the average-case
-notion needs $255$ bits, a roughly $1.5\times$ gap.  The grinding discussion of
-\cref{sec:background} is that worst-case notion stated operationally, because a
-grinding prover is exactly one who spends its whole query budget hunting for
-the transcript where the bound is tightest.
-
-\paragraph{The rule prices both, through $h$.}
-The rule (\cref{eq:rule}) sets the digest to $D=9$ field elements
-($\digestbits=270$ bits) for BabyBear at $\secpar=128$, $h=64$: a $13$-bit
-margin over the $\secpar+1+2h=257$-bit floor, which is the average-case
-instance.  The worst-case target enters the rule only through the query
-budget $h$, the declared input that names the adversary model.  Re-running
-the constructor at $h=128$ gives
-$D=\lceil(128+1+256)/30\rceil=13$, so $\digestbits=390\ge383$, with no new
-analysis.  $D=9$ and $D=13$ are two certificates for two adversary models and
-must not be crossed: a $D=9$ configuration certifies nothing against a
-grinding prover.  Write $\ThetaVC$ for the concrete
-configuration under test (field, level, hash, and derived widths), so
-$\Adv{bind}(\ThetaVC)$ is the binding advantage against that Merkle instance.
-
 \begin{proposition}[Binding from collision resistance]\label{thm:binding-cr}
-Let $\MT[\RO]$ be a Merkle commitment over a shape $G_\ell$ whose leaf encoding
-is injective and whose leaf and internal-node calls are domain separated.  If
+Let $\MT[\RO]$ be a Merkle commitment over a perfect binary tree of depth $d$ whose leaf
+encoding is injective and whose leaf and internal-node calls are domain separated.  If
 the shared $\digestbits$-bit oracle receives at most $\querybudget$ distinct
 queries during the complete experiment, then
 \[
@@ -56,29 +33,39 @@ queries during the complete experiment, then
 \]
 which meets $2^{-\secpar}$ when $\querybudget\le2^{h}$ and
 $\secpar+1+2h\le\digestbits$.
-\status{Lean-backed, generic over \texttt{MerkleShape}}
+\status{Lean-backed}
 \end{proposition}
 
-\noindent\emph{Proof sketch.}
-A disputed index $i\in\idxset_0\cap\idxset_1$ yields two authentication paths
-that agree at some parent but disagree below it: two distinct oracle inputs with
-one output.  Domain separation pins the leaf and internal roles, so the
-collision is genuine.  What remains is the adversary's freedom to re-interpret
-the same digests under a different tree shape, which is the tree-inequality
-event $E_{\mathrm{tree}}$ of~\cite{CY26}: the tree reconstructed from the
-commitment trace and the one reconstructed after the opening queries can differ
-only if some opening answer accidentally matches a label already fixed in the
-first tree.  A union bound over the opening queries keeps that probability
-negligible whenever the digest resists collisions, so a binding break still
-reduces to one oracle collision rather than to any freedom in how the tree is
-read.  Hashing a geometry tag of layer, index, and arity into each node keeps
-this domain separation positional, which forecloses the replay of a subtree
-proof in a differently shaped tree.
+The binary tree is the case Chiesa and Yogev prove directly, and we take their proof as
+given~\cite{CY26}: either the adversary's query trace already contains a collision, or the
+two accepted openings of the minimal disputed index yield one across the two verification
+traces, bounded by a union bound over the at most $(d+1)^2$ query pairs.  This is the
+straightforward form the book states before improving on it, and the form \cref{eq:rule}
+consumes.  The reduction is machine-checked in Lean~4~\cite{ZLeanVC26} for a general Merkle
+shape, closed for singleton openings and argued on paper for a general index set
+(\cref{app:binding-generic}).
 
-\paragraph{The reduction is generic; the backing is mechanical.}
-The colliding-paths step, the birthday bound, and the parameter arithmetic
-additionally carry a machine-checked Lean backing~\cite{ZLeanVC26}, so binding
-is the axis with independent mechanical assurance behind it.  The reduction
-itself is generic over the Merkle shape: the binary tree is the exhibited
-instance, and $k$-ary and arbitrary-length shapes share the argument but are
-not yet exhibited (\cref{sec:conclusion}).
+Now that we have seen the reduction to collision resistance, consider how a hasher is
+implemented concretely. Every hasher in \textsf{ark-mt} satisfies one \code{MerkleHasher}
+trait (\cref{app:hasher-trait}), and the current Poseidon2 implementation sets its digest
+to one field element, for every field $\mathbb{F}$ and every target $\lambda$. Nothing in
+the trait or the implementation reads $\lambda$.
+
+Now suppose we set a target security parameter $\lambda=128$. BabyBear's modulus is
+$p=2013265921$, a $31$-bit prime, and the conservative bound used throughout this report is
+$b=\lfloor\log_2 p\rfloor=30$ bits per element, so a one-element digest publishes a root drawn
+from a $30$-bit space. Applying \Cref{lem:birthday} at $\digestbits=30$, a collision search
+succeeds once the query count passes roughly $2^{15.5}\approx46{,}000$, well short of a
+$\lambda=128$ target.
+
+The book states this result plainly for a $31$-bit field. We ran
+the search only to confirm that the one-element preset sits in that regime, and it produced two
+trees over different messages sharing one root in $44$ seconds on a commodity laptop,
+averaged over three seeded runs (\cref{app:demo}). The collision is cross-shape, between an
+$8$-leaf binary tree and an $8$-leaf $8$-ary tree on the same Poseidon2 instance, and it
+still breaks \Cref{def:vc-binding} as stated because \code{hash\_leaf} and
+\code{hash\_nodes} carry no layer, index, or arity tag (\cref{lem:geometry}). Working
+backwards from $\lambda$ and $\mathbb{F}$, \cref{eq:rule} asks for
+$D=\lceil257/30\rceil=9$ elements at $\lambda=128$ and $h=64$, so fixing the hasher means
+widening \code{Digest} from \code{F} to a nine-element array and hashing into all nine on
+every call, which we price in \Cref{sec:cost}.

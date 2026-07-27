@@ -1,58 +1,81 @@
 \reportsection{Background}
 \label{sec:background}
 
-AZ - What two properties? I really don't understand this section it's a firehose of out of context facts and sentences
-\paragraph{What the two properties buy.}
-In the BCS compilation~\cite{BCS16} \textsf{ark-vc}~\cite{ArkVC26} targets, in the lineage of
-Kilian's committed-proof arguments and Micali's CS
-proofs~\cite{Kilian92,Micali00,FS86}, each oracle message is committed and the
-verifier's queries are answered with authenticated openings.  The root is
-fixed into the transcript from the first message, so \emph{binding} enters the
-compiled soundness bound additively~\cite{CDGS24} and lets the soundness
-argument treat committed answers as fixed, while Fiat--Shamir grinding
-inflates the query budget and raises the digest target from roughly
-$2\secpar$ to $3\secpar$ bits.  \emph{Hiding} is what a zero-knowledge
-argument relies on, and it has no protocol-level rescue: the root is read
-before any later message, so salt entropy cannot be traded for code distance,
-query count, or round structure.
+Traditionally, when we think of Merkle trees we think of arity $2$ throughout, one hasher
+$f$ at every level, and a simple binding claim tied to the root commitment.  As protocols
+mature and the area is studied more deeply, the picture has broadened to varying arity,
+mixing hashers across levels, and different flavours of binding, each motivated by
+performance and recursion-friendliness. That shift complicates security analysis, and it
+is easy to lose track of details that a fixed arity-$2$, single-hasher tree used to
+settle by construction.
 
-\paragraph{Why a rule is needed.}
-The shipped failure is concrete.  At the \code{MerkleHasher} trait of \textsf{ark-mt} the digest
-and salt widths are associated types with no field-size check, and for
-BabyBear at $\secpar=128$ a one-element digest publishes a root in a
-${\sim}30$-bit space.  An honest tree over $2^{20}$ leaves already makes
-roughly $2$~million internal hash calls, far past that space's ${\sim}46{,}000$
-birthday threshold, and a deliberate collision confirms the binding break in
-$44$~seconds; the one-element salt fails hiding the same way.  Neither failure
-implicates the hash function.  Both follow from parameters that do not scale
-with the field, which is exactly what a derivation rule would prevent and why it
-is important that users be made aware.
+\begin{definition}[Vector commitment scheme]\label{def:vcgeneral}
+A \emph{vector commitment scheme}~\cite{CF13} over alphabet $\MTAlphabet$ and length
+$\MTMessageLength$ is a triple $\VC=(\Commit,\Open,\VCCheck)$:
+\begin{itemize}
+  \item $\Commit(\msgvec)\to(\comm,\aux)$ binds a message
+  $\msgvec\in\MTAlphabet^{\MTMessageLength}$ to a short commitment $\comm$ and
+  retains a state $\aux$;
+  \item $\Open(\aux,\idxset)\to\opening$ authenticates an index set
+  $\idxset\subseteq[\MTMessageLength]$;
+  \item $\VCCheck(\comm,\idxset,\MTMessageSubVector,\opening)\to\bits$ decides
+  whether $\opening$ authenticates the subvector $\MTMessageSubVector$ at
+  $\idxset$ against $\comm$, where for an honest committer
+  $\MTMessageSubVector$ is exactly the committed message $\msgvec$ restricted
+  to the positions in $\idxset$.
+\end{itemize}
+A scheme is \emph{complete} (\cref{def:vc-complete}) and \emph{position-binding}
+(\cref{def:vc-binding}).  It may also implement optional extensions, namely hiding
+(\cref{def:vc-hiding}), updatability, aggregation, functional opening, and
+knowledge soundness, of which this report treats only hiding.
+\end{definition}
+
+\begin{definition}[Completeness]\label{def:vc-complete}
+$\VC$ is \emph{complete} if for every $\msgvec\in\MTAlphabet^{\MTMessageLength}$
+and every $\idxset\subseteq[\MTMessageLength]$ the honest
+$\Commit$--$\Open$--$\VCCheck$ round trip accepts $\msgvec_{\idxset}$ with
+probability~$1$.  For Merkle this is honest reconstruction of the root from an
+opening.
+\end{definition}
+
+\begin{definition}[Merkle commitment scheme]
+The \emph{Merkle commitment scheme}~\cite{Merkle88}
+$\MTSymbol=(\MTCommit,\allowbreak\MTOpen,\allowbreak\MTCheck)$
+instantiates \cref{def:vcgeneral} in the random-oracle model over a general
+Merkle shape $G_\ell$ of depth $d=\max_i d_i$, the deepest of the per-leaf depths
+$d_i$ over leaves $i$: the three algorithms query a
+shared oracle $\ROFunction$, the commitment is the tree root, and the committer
+state is the retained salts and labels.  The binary tree is the arity-$2$ subset
+of this shape.  Two parameters carry the security: the digest
+width $\digestbits$ governs binding and the salt size $\MTSaltSize$ governs
+hiding, with no tuning of one supplying what the other lacks.
+\end{definition}
+
+Binding is required of every scheme in this report, and hiding matters only where the
+protocol built on top needs zero-knowledge. At the \code{MerkleHasher} trait of
+\textsf{ark-mt} the digest and salt widths are associated
+types, fixed by whoever writes the implementation, and nothing compares them against the
+size of the field.  BabyBear at $\secpar=128$ therefore gets a one-element digest over a
+${\sim}30$-bit space and a one-element salt carrying ${\sim}30$ bits of entropy.  The
+book~\cite{CY26} reaches the same figure and observes that such an instantiation is not
+flawed as such, since a protocol may bound the prover's Merkle queries far below the
+birthday threshold and argue security from its own soundness analysis.  The trait gives
+no way to declare that bound, which is the role of $h$ in the rule below.
 
 \input{sections/rule-box}
 
-The justification is short.  A $q\le2^{h}$-query collision search succeeds
-against a $\digestbits$-bit digest with probability about $q^2/2^{\digestbits+1}$,
-so meeting $2^{-\secpar}$ needs $\digestbits\ge\secpar+1+2h$ bits, and $D$ is
-that floor in field elements; $k$ and $S$ give the salt at least $\secpar$
-bits of entropy in the hash's native unit.  The query-budget exponent $h$ is
-the one input that names the adversary model, which is why it is declared
-rather than derived (\cref{sec:binding} prices two choices of it).  One scope
-note applies throughout: every parameter is sized against a classical
-adversary, since Grover search halves effective salt entropy and quantum
-collision search shifts the digest accounting, and a quantum column of the
-rule is deferred.  The report follows the rule by property: binding
-(\cref{sec:binding}) and hiding (\cref{sec:hiding}) carry their own
-definition, failure, and parameter, \cref{sec:spine} states the model behind
-the rule, and \cref{sec:cost} measures the cost.
+The justification is short.  A $\querybudget\le2^{h}$-query collision search succeeds
+against a $\digestbits$-bit digest with probability about
+$\querybudget^2/2^{\digestbits+1}$, so meeting $2^{-\secpar}$ needs
+$\digestbits\ge\secpar+1+2h$ bits, and $D$ is that floor in field elements
+(\cref{lem:birthday}).  The salt is attacked one guess at a time, so $k$ and $S$ give it
+$\secpar$ bits of entropy in the hash's native unit.
 
-AZ - If this is truly meant to be background ... you want to explain that traditionally people think about merkle commitments as a tree with arity 2 and a single hasher type f at every level. More recently, people have an interest in changing arity and hashers at different levels for performance and recursion friendliness and this adds complexity to security analysis.
+The query budget is where the adversary model enters, and it is the one input the
+constructor cannot derive: a prover that grinds a Fiat--Shamir transcript spends its whole
+query budget searching for a favourable challenge, which is why the designer declares $h$
+rather than the constructor inferring it.
 
-Then you could very briefly summarize basically the book's coverage of whatever properties are most important: binding, hiding, whatever you think is sufficient and in scope.
-
-Key definitions can go here but they need to be much much more concise then they currently read.
-
-Also, if you really want to talk about BCS it needs to be incredibly succinct and I don't see how you can do this without before defining an IOP as a popular construction of zero knowledge proof systems in like two sentences or less. I leave this to you to decide but I have my doubts.
-
-Then you're done. This is the background of what a merkle commitment is and what about it is important. 
-
-AZ - Next, you want to walk through each of your four contributions as one section each (in whatever order you find best).
+The report follows the rule by property from here.  \Cref{sec:binding} and
+\cref{sec:hiding} each carry their own definition, failure, and derived parameter, and
+\cref{sec:cost} measures what the derived parameters cost to run.

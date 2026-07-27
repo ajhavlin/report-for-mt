@@ -1,16 +1,21 @@
 \reportsection{Conclusion and Next Steps}
 \label{sec:conclusion}
 
-A vector commitment is only as strong as the parameters underneath it, and the
-default \textsf{ark-mt} configurations miss that target for small fields on
-both axes at once.  This report established three things.  The rule of
-\cref{eq:rule} derives, from a designer's declared inputs, the digest and salt
-parameters a security target forces, and refuses the undersized configurations
-the shipped defaults accept, including the one broken here in $44$ seconds.
-The cost benchmarks price the derived parameters and show that for Poseidon2 the
-certified configurations fit inside permutation blocks already paid for, so
-correct security at $\secpar=128$ costs nothing extra.  The binding analysis
-behind the rule additionally carries a machine-checked Lean backing.
+A vector commitment is only as strong as the parameters underneath it, and
+Arkworks' current defaults miss that target for small fields on both axes at
+once.  The rule of \cref{eq:rule} derives, from a designer's declared inputs,
+the digest and salt parameters a security target forces, and refuses the
+undersized configurations those defaults allow, including the one broken here
+in $44$ seconds.  The cost benchmarks price the derived parameters and
+separate the security thresholds from the cost transitions.  For Poseidon2 the
+certified hiding salts fit inside permutation blocks already paid for on all
+three fields, so hiding at $\secpar=128$ costs nothing extra.  Binding is free
+in the same sense only on Goldilocks.  BabyBear and BN254 reach their
+certified digest widths one element past the permutation boundary and pay
+roughly half again in prover time for it.  That cost is what the correct
+parameter is worth on those fields.  The binding reduction and the
+salt-cardinality lemmas hiding needs both carry a machine-checked Lean
+backing.
 
 \paragraph{Next.}
 The formal status splits three ways, and the split is the information.  Closed:

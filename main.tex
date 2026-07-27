@@ -25,17 +25,18 @@
 Merkle commitment schemes are increasingly essential tools in the construction
 of post quantum secure cryptography in general and zero knowledge proof systems
 specifically. While widely accepted techniques are intuitive to describe, their
-apparent simplicity disguises the potential for critical parameterization errors. 
+apparent simplicity disguises the potential for critical parameterisation errors.
 Practitioners are pulled in two directions: oversized parameters make the scheme
 slow, while under configuration leads to concrete vulnerabilities in the higher
 level protocol. In this effort, we address these challenges leveraging an interface
-that bridges security definitions with scheme configuration. We implement this
-infrastructure in Rust for the Arkworks ecosystem and show that undersized
-concrete instantiations (based on a security parameter) are detected and refused
-rather than shipped. Additionally, we provide methodology for describing the
-relationship between security and performance for properties like binding and
-hiding. Finally, we provide machine-checked analysis of the binding property
-as described in this framework using Lean 4.
+that bridges security definitions with scheme configuration. Both digest width
+and per-leaf salt cardinality are tweakable parameters for a concrete instantiation.
+We demonstrate their relationship in Arkworks to the size of the field by showing that
+undersizing these parameters leads to a degredation of the security claimed by a
+particular scheme. Additionally, we provide methodology for describing the relationship
+between security and performance for properties like binding and hiding. Finally, we
+provide machine-checked analysis of the binding property as described in this framework
+using Lean~4.
 \end{abstract}
 
 % \reportkeywords{vector commitments; Merkle trees; random oracle model; Lean~4;
@@ -45,10 +46,11 @@ as described in this framework using Lean 4.
 \input{sections/background}
 \input{sections/binding}
 \input{sections/hiding}
-\input{sections/spine}
 \input{sections/cost}
-\input{sections/provenance}
 \input{sections/conclusion}
+
+\appendix
+\input{sections/appendix}
 
 \begingroup
 \footnotesize
